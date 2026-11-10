@@ -1,15 +1,21 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Widgets
 
-// Header: user (first letter capitalised), distro + window manager detected automatically.
+// Header: profile picture (~/.face) or initial, display name, distro + window manager.
+// Click the avatar or the name to change them (dwm-profile).
 Item {
     id: root
 
     width: 300
     height: 84
 
+    signal requestClose()
+
     property string userName: ""
+    property string facePath: ""
+    property string faceStamp: ""
     property string hostName: ""
     property string distroName: "Linux"
     property string distroId: "linux"
@@ -24,18 +30,48 @@ Item {
         "opensuse-leap": 0xF314, "nixos": 0xF313, "gentoo": 0xF30D, "void": 0xF32E
     })
 
-    function capitalize(s) {
-        return s.split(/\s+/).filter(w => w.length)
-                .map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+    function editProfile() {
+        root.requestClose()
+        Quickshell.execDetached(["sh", "-c", "sleep 0.3; dwm-profile menu"])
     }
 
-    // one shot: user, host, distro, wm  (key=value lines)
+    // name + picture (re-read every few seconds so changes show up by themselves)
+    Process {
+        id: profileProcess
+        running: true
+        command: ["sh", "-c",
+            "dwm-profile get 2>/dev/null || echo \"name=$USER\";" +
+            "[ -f \"$HOME/.face\" ] && echo \"stamp=$(stat -c %Y \"$HOME/.face\")\"; true"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let name = "", face = "", stamp = ""
+                for (const line of this.text.split("\n")) {
+                    const i = line.indexOf("=")
+                    if (i < 0) continue
+                    const k = line.slice(0, i), v = line.slice(i + 1).trim()
+                    if (k === "name") name = v
+                    else if (k === "face") face = v
+                    else if (k === "stamp") stamp = v
+                }
+                if (name) root.userName = name
+                root.facePath = face
+                root.faceStamp = stamp
+            }
+        }
+    }
+
+    Timer {
+        interval: 3000
+        running: true
+        repeat: true
+        onTriggered: profileProcess.running = true
+    }
+
+    // one shot: host, distro, wm  (key=value lines)
     Process {
         id: infoProcess
         running: true
         command: ["sh", "-c",
-            "full=$(getent passwd \"$USER\" | cut -d: -f5 | cut -d, -f1);" +
-            "echo \"user=${full:-$USER}\";" +
             "echo \"host=$(cat /etc/hostname 2>/dev/null || uname -n)\";" +
             ". /etc/os-release 2>/dev/null; echo \"distro=${PRETTY_NAME:-${NAME:-Linux}}\"; echo \"id=${ID:-linux}\";" +
             "wm=''; for w in Hyprland sway niri river labwc dwm i3 bspwm awesome openbox xmonad qtile herbstluftwm spectrwm leftwm berry; do" +
@@ -48,8 +84,7 @@ Item {
                     const i = line.indexOf("=")
                     if (i < 0) continue
                     const k = line.slice(0, i), v = line.slice(i + 1).trim()
-                    if (k === "user") root.userName = root.capitalize(v)
-                    else if (k === "host") root.hostName = v
+                    if (k === "host") root.hostName = v
                     else if (k === "distro") root.distroName = v
                     else if (k === "id") root.distroId = v.toLowerCase()
                     else if (k === "wm") root.wmName = v
@@ -78,20 +113,62 @@ Item {
         anchors.fill: parent
         spacing: 14
 
-        // avatar: initial in a circle
-        Rectangle {
+        // avatar: picture in a circle, or the initial
+        Item {
+            id: avatar
             width: 58
             height: 58
-            radius: 29
             anchors.verticalCenter: parent.verticalCenter
-            color: "#7aa2f7"
 
-            Text {
-                anchors.centerIn: parent
-                text: root.userName.length ? root.userName.charAt(0) : "?"
-                color: "#1a1b26"
-                font.pixelSize: 26
-                font.bold: true
+            ClippingRectangle {
+                anchors.fill: parent
+                radius: width / 2
+                color: "#7aa2f7"
+
+                Image {
+                    anchors.fill: parent
+                    visible: root.facePath !== "" && status === Image.Ready
+                    source: root.facePath ? "file://" + root.facePath + "?v=" + root.faceStamp : ""
+                    fillMode: Image.PreserveAspectCrop
+                    sourceSize.width: 116
+                    sourceSize.height: 116
+                    cache: false
+                    asynchronous: true
+                    smooth: true
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    visible: root.facePath === ""
+                    text: root.userName.length ? root.userName.charAt(0).toUpperCase() : "?"
+                    color: "#1a1b26"
+                    font.pixelSize: 26
+                    font.bold: true
+                }
+
+                // hover: "edit" overlay
+                Rectangle {
+                    anchors.fill: parent
+                    color: "#991a1b26"
+                    visible: avatarMouse.containsMouse
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: String.fromCodePoint(0xF03EB)
+                        font.family: "JetBrainsMono Nerd Font Mono"
+                        font.pixelSize: 20
+                        color: "#c0caf5"
+                    }
+                }
+            }
+
+            // ring
+            Rectangle {
+                anchors.fill: parent
+                radius: width / 2
+                color: "transparent"
+                border.width: 2
+                border.color: avatarMouse.containsMouse ? "#7aa2f7" : "#414868"
             }
 
             // distro badge
@@ -115,6 +192,14 @@ Item {
                     color: "#7aa2f7"
                 }
             }
+
+            MouseArea {
+                id: avatarMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.editProfile()
+            }
         }
 
         Column {
@@ -125,10 +210,18 @@ Item {
             Text {
                 width: parent.width
                 text: root.userName || " "
-                color: "#c0caf5"
+                color: nameMouse.containsMouse ? "#7aa2f7" : "#c0caf5"
                 font.pixelSize: 20
                 font.bold: true
                 elide: Text.ElideRight
+
+                MouseArea {
+                    id: nameMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.editProfile()
+                }
             }
 
             Text {

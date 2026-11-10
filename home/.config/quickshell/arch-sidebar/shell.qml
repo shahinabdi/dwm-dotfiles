@@ -98,6 +98,7 @@ ShellRoot {
 
                     UserCard {
                         width: parent.width
+                        onRequestClose: root.sidebarVisible = false
                     }
 
                     Rectangle {

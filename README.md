@@ -63,6 +63,7 @@ Add a new config by listing its path in `manifest.txt` and running `./sync.sh`.
 | `home/.config/picom`, `systemd/user/picom.service` | compositor, auto-restarted, logs in `journalctl --user -u picom` |
 | `home/.config/dunst` | notifications |
 | `home/.config/kitty` | terminal |
+| `home/.config/fastfetch` | system info in boxed sections (Hardware / Software / Uptime), Tokyo Night colours: run `fastfetch` |
 | `home/.config/gtk-3.0`, `gtk-4.0`, `.gtkrc-2.0`, `qt5ct`, `qt6ct`, `xsettingsd` | dark Adwaita, Papirus-Dark icons, JetBrains Mono, live GTK font changes |
 | `home/.Xresources`, `.icons/default` | Capitaine cursors |
 | `home/.config/flameshot` | annotate screenshots |
