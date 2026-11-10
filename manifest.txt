@@ -1,0 +1,20 @@
+# Paths (relative to $HOME) deployed by install.sh and collected by sync.sh.
+# A directory is copied as a whole. "@HOME@" inside files is replaced with your $HOME.
+.xinitrc
+.Xresources
+.gtkrc-2.0
+.icons/default/index.theme
+.config/kitty/kitty.conf
+.config/dunst/dunstrc
+.config/picom/picom.conf
+.config/rofi/config.rasi
+.config/rofi/themes/tokyo-dwm.rasi
+.config/gtk-3.0/settings.ini
+.config/gtk-4.0/settings.ini
+.config/qt5ct/qt5ct.conf
+.config/qt6ct/qt6ct.conf
+.config/xsettingsd/xsettingsd.conf
+.config/flameshot/flameshot.ini
+.config/quickshell/arch-sidebar
+.config/systemd/user/picom.service
+.config/systemd/user/clipmenud.service.d/override.conf

@@ -1,0 +1,2 @@
+# workspace apps (official repos): 4 Thunar, 6 Obsidian, 10 OBS
+thunar obsidian obs-studio

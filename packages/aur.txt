@@ -1,0 +1,2 @@
+# workspace apps (AUR, installed with yay): 2 Brave, 3 VS Code, 5 Proton Mail
+brave-bin visual-studio-code-bin proton-mail-bin

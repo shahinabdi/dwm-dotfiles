@@ -1,0 +1,14 @@
+# X11 + build
+xorg-server xorg-xinit xorg-xrandr xorg-xsetroot xorg-xprop xorg-xrdb xorg-xwininfo xorg-xset
+base-devel git libx11 libxft libxinerama fontconfig freetype2
+# desktop
+kitty rofi picom dunst libnotify feh xdg-utils perl xsettingsd quickshell
+# audio (PipeWire + noise-cancelling mic)
+pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol noise-suppression-for-voice
+# network, bluetooth, brightness
+networkmanager bluez bluez-utils brightnessctl
+# screenshots, clipboard, lock
+maim xclip xdotool flameshot clipmenu i3lock
+# look: themes, icons, cursors, fonts
+gnome-themes-extra papirus-icon-theme capitaine-cursors qt5ct qt6ct
+ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-go-nerd

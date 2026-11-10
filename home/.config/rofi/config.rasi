@@ -1,0 +1,13 @@
+configuration {
+    modi:                "drun,run,window";
+    show-icons:          false;   /* icons only in the app launcher (dwm passes -show-icons) */
+    icon-theme:          "Papirus-Dark";
+    drun-display-format: "{name}";
+    display-drun:        "󰍉 ";
+    display-run:         " ";
+    display-window:      "󰖯 ";
+    /* font size is changed by dwm-display (Mod+Shift+d) — keep it on this line */
+    font: "JetBrainsMono Nerd Font Mono 12";
+}
+
+@theme "~/.config/rofi/themes/tokyo-dwm.rasi"

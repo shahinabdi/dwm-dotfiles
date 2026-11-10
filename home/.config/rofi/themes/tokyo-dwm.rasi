@@ -1,0 +1,109 @@
+/* tokyo-dwm — rofi theme matching the dwm bar + quickshell sidebar (Tokyo Night). */
+* {
+    bg:        #1a1b26;
+    bg-alt:    #24283b;
+    bg-hover:  #2f3549;
+    border:    #414868;
+    fg:        #c0caf5;
+    fg-dim:    #565f89;
+    fg-alt:    #a9b1d6;
+    accent:    #7aa2f7;
+    urgent:    #f7768e;
+    on-accent: #1a1b26;
+
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+window {
+    location:         center;
+    anchor:           center;
+    width:            640px;
+    transparency:     "real";
+    background-color: @bg;
+    border:           1px;
+    border-color:     @border;
+    border-radius:    12px;
+    padding:          14px;
+}
+
+mainbox {
+    spacing:  12px;
+    children: [ inputbar, message, listview ];
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border:           1px;
+    border-color:     @border;
+    border-radius:    10px;
+    padding:          10px 14px;
+    spacing:          10px;
+    children:         [ prompt, entry ];
+}
+prompt {
+    text-color: @accent;
+}
+entry {
+    placeholder:       "search…";
+    placeholder-color: @fg-dim;
+    cursor:            text;
+}
+
+message {
+    background-color: @bg-alt;
+    border-radius:    10px;
+    padding:          8px 12px;
+}
+textbox {
+    text-color: @fg-alt;
+}
+
+listview {
+    lines:        8;
+    columns:      1;
+    spacing:      4px;
+    cycle:        true;
+    dynamic:      true;
+    scrollbar:    false;
+    fixed-height: false;
+}
+
+element {
+    padding:       8px 12px;
+    border-radius: 8px;
+    spacing:       12px;
+}
+element normal.normal,
+element alternate.normal {
+    background-color: transparent;
+    text-color:       @fg;
+}
+element normal.active,
+element alternate.active {
+    background-color: transparent;
+    text-color:       @accent;
+}
+element normal.urgent,
+element alternate.urgent {
+    background-color: transparent;
+    text-color:       @urgent;
+}
+element selected.normal,
+element selected.active {
+    background-color: @accent;
+    text-color:       @on-accent;
+}
+element selected.urgent {
+    background-color: @urgent;
+    text-color:       @on-accent;
+}
+element-icon {
+    size:             24px;
+    background-color: inherit;
+}
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
