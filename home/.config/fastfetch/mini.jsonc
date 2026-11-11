@@ -1,0 +1,23 @@
+// fastfetch mini — narrow or short terminals (split tiles): no logo, no boxes, one line per item.
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": { "type": "none" },
+  "display": {
+    "separator": " ",
+    "key": { "width": 4 },
+    "color": { "separator": "38;2;86;95;137", "output": "38;2;192;202;245" }
+  },
+  "modules": [
+    { "type": "title", "format": "{#38;2;122;162;247}{user-name}{#38;2;86;95;137}@{#38;2;122;162;247}{host-name}" },
+    { "type": "os",       "key": "", "keyColor": "38;2;224;175;104", "format": "{name}" },
+    { "type": "kernel",   "key": "", "keyColor": "38;2;224;175;104", "format": "{release}" },
+    { "type": "wm",       "key": "", "keyColor": "38;2;224;175;104" },
+    { "type": "packages", "key": "", "keyColor": "38;2;224;175;104", "format": "{all}" },
+    { "type": "cpu",      "key": "", "keyColor": "38;2;158;206;106", "format": "{cores-logical}× {freq-max}" },
+    { "type": "memory",   "key": "", "keyColor": "38;2;158;206;106", "format": "{used} / {total}" },
+    { "type": "disk",     "key": "", "keyColor": "38;2;158;206;106", "folders": "/", "format": "{size-used} / {size-total}" },
+    { "type": "battery",  "key": "", "keyColor": "38;2;158;206;106", "format": "{capacity}" },
+    { "type": "uptime",   "key": "", "keyColor": "38;2;187;154;247" },
+    { "type": "colors",   "symbol": "circle", "paddingLeft": 0 }
+  ]
+}

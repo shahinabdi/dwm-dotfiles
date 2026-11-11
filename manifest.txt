@@ -20,6 +20,9 @@
 .config/xsettingsd/xsettingsd.conf
 .config/flameshot/flameshot.ini
 .config/fastfetch/config.jsonc
+.config/fastfetch/compact.jsonc
+.config/fastfetch/mini.jsonc
+.local/bin/fastfetch
 .config/autorandr/postswitch
 .config/quickshell/arch-sidebar
 .config/systemd/user/picom.service

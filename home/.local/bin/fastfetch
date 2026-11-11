@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# fastfetch wrapper (dwm-btw): picks a layout that fits the terminal
+#   full     logo + boxed sections      (>= 100 columns and >= 34 rows)
+#   compact  boxed sections, no logo    (>= 56 columns and >= 34 rows)
+#   mini     one short line per item    (anything smaller, e.g. a split tile)
+# Passing your own -c/--config (or --help etc.) goes straight to fastfetch.
+real=/usr/bin/fastfetch
+for a in "$@"; do case $a in -c|--config|--config=*|-h|--help|--version|--list-*|--gen-config*) exec "$real" "$@" ;; esac; done
+d="${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch"
+cols=$(tput cols 2>/dev/null || echo 120); rows=$(tput lines 2>/dev/null || echo 50)
+if   (( cols >= 100 && rows >= 34 )); then cfg="$d/config.jsonc"
+elif (( cols >= 56 && rows >= 34 ));  then cfg="$d/compact.jsonc"
+else                                       cfg="$d/mini.jsonc"; fi
+[ -f "$cfg" ] || cfg="$d/config.jsonc"
+exec "$real" -c "$cfg" "$@"
