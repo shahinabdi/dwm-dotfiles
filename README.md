@@ -103,6 +103,10 @@ Rules and icons are in `rules.h` / `tags.h` in the dwm repo.
 | Mod+Shift+h | cheat sheet with every binding |
 | Mod+Return / Mod+d | terminal / app launcher |
 | Mod+a | quick-settings sidebar |
+| Mod+j / Mod+k (or l / h) | focus next / previous window |
+| Mod+z | make the focused window the master (again: swap back) |
+| Mod+Left / Mod+Right, Mod+i / Mod+u | master area narrower / wider, more / fewer master windows |
+| Mod+q | close window |
 | Mod+& é " ' ( - è _ ç à (QWERTY: Mod+1 … 0) | workspace 1–10 (Shift = move window) |
 | Mod+Space | next keyboard layout (fr ⇄ ir / us ⇄ ir) |
 | Mod+v | clipboard history |
