@@ -9,6 +9,9 @@
 #   ./install.sh --no-aur      skip AUR packages (and installing yay)
 #   ./install.sh --configs     only deploy configs (no packages, no dwm build, no services)
 #   ./install.sh --no-sddm     keep logging in with startx (no SDDM login screen)
+#   ./install.sh --keyboard qwerty   QWERTY keys: Mod + 1 … 0 for workspaces, Mod + . / , for screens
+#                              (default: azerty — Mod + & é " ' ( - è _ ç à, Mod + ; / ,)
+#   ./install.sh --layouts us,ir     keyboard layouts, Mod+Space cycles (default fr,ir / us,ir with qwerty)
 #
 # Env: DWM_DIR (default ~/dwm-btw)   DWM_REPO (default https://github.com/shahinabdi/dwm.git)
 #
@@ -21,19 +24,38 @@ DWM_DIR=${DWM_DIR:-$HOME/dwm-btw}
 DWM_REPO=${DWM_REPO:-https://github.com/shahinabdi/dwm.git}
 STAMP=$(date +%Y%m%d-%H%M%S)
 
-DRY=0 LINK=0 APPS=1 AUR=1 ONLY_CONFIGS=0 SDDM=1
-for a in "$@"; do
+DRY=0 LINK=0 APPS=1 AUR=1 ONLY_CONFIGS=0 SDDM=1 KEYBOARD="" LAYOUTS=""
+while (( $# )); do
+	a=$1; shift
 	case $a in
+		--keyboard=*) KEYBOARD=${a#*=} ;;
+		--keyboard)   KEYBOARD=${1:-}; shift || true ;;
+		--layouts=*)  LAYOUTS=${a#*=} ;;
+		--layouts)    LAYOUTS=${1:-}; shift || true ;;
 		--dry-run) DRY=1 ;;
 		--link)    LINK=1 ;;
 		--no-apps) APPS=0 ;;
 		--no-aur)  AUR=0 ;;
 		--configs) ONLY_CONFIGS=1 ;;
 		--no-sddm) SDDM=0 ;;
-		-h|--help) sed -n '2,15p' "$0"; exit 0 ;;
+		-h|--help) sed -n '2,18p' "$0"; exit 0 ;;
 		*) echo "unknown option: $a (see --help)" >&2; exit 1 ;;
 	esac
 done
+
+# keyboard profile: option > existing ~/.config/dwm-btw.conf > azerty
+KBD_CONF=$HOME/.config/dwm-btw.conf
+KBD_GIVEN=0; [ -n "$KEYBOARD$LAYOUTS" ] && KBD_GIVEN=1
+if [ -f "$KBD_CONF" ]; then
+	# shellcheck disable=SC1090
+	old=$( . "$KBD_CONF"; echo "${KEYBOARD:-}|${LAYOUTS:-}")
+	# keep the saved layouts only when the profile is not being changed on the command line
+	if [ -z "$KEYBOARD" ]; then KEYBOARD=${old%%|*}; [ -n "$LAYOUTS" ] || LAYOUTS=${old#*|}; fi
+fi
+KEYBOARD=${KEYBOARD:-azerty}
+case $KEYBOARD in azerty|qwerty) ;; *) echo "--keyboard must be azerty or qwerty" >&2; exit 1 ;; esac
+if [ -z "$LAYOUTS" ]; then [ "$KEYBOARD" = qwerty ] && LAYOUTS=us,ir || LAYOUTS=fr,ir; fi
+[[ $LAYOUTS =~ ^[a-z]+(\([a-z0-9_-]+\))?(,[a-z]+(\([a-z0-9_-]+\))?)*$ ]] || { echo "bad --layouts: $LAYOUTS" >&2; exit 1; }
 
 c_blue=$'\e[1;34m' c_yel=$'\e[1;33m' c_red=$'\e[1;31m' c_dim=$'\e[2m' c_off=$'\e[0m'
 step() { printf '\n%s==> %s%s\n' "$c_blue" "$*" "$c_off"; }
@@ -152,8 +174,9 @@ build_dwm() {
 	else
 		warn "$DWM_DIR has local changes — not pulling, building as is"
 	fi
-	if (( DRY )); then info "[dry] make clean && make && sudo make install"
-	else (cd "$DWM_DIR" && make clean >/dev/null && make && sudo make install); fi
+	info "keyboard profile: $KEYBOARD"
+	if (( DRY )); then info "[dry] make clean && make KEYBOARD=$KEYBOARD && sudo make install"
+	else (cd "$DWM_DIR" && make clean >/dev/null && make KEYBOARD="$KEYBOARD" && sudo make install); fi
 
 	step "dwm helper scripts -> ~/.local/bin"
 	local s
@@ -184,14 +207,17 @@ setup_system() {
 		/etc/systemd/system/autorandr.service.d/override.conf
 	run sudo systemctl daemon-reload
 	info "monitors: plug in a screen -> saved layout, or extended side by side (autorandr)"
-	run sudo localectl set-x11-keymap fr,ir pc105 "" ""
-	info "keyboard: fr + ir (Mod+Space switches)"
+	run sudo localectl set-x11-keymap "$LAYOUTS" pc105 "" ""
+	info "keyboard: $LAYOUTS (Mod+Space switches), dwm keys: $KEYBOARD"
 
 	if (( SDDM )); then
-		step "Login screen (SDDM + Sugar Candy, French keyboard, dwm session = ~/.xinitrc)"
+		step "Login screen (SDDM + Sugar Candy, keyboard $LAYOUTS, dwm session = ~/.xinitrc)"
 		run sudo cp -r "$REPO/sddm/sugar-candy-dwm" /usr/share/sddm/themes/
 		run sudo install -Dm644 "$REPO/system/etc/sddm.conf.d/10-dwm-btw.conf" /etc/sddm.conf.d/10-dwm-btw.conf
-		run sudo install -Dm755 "$REPO/system/etc/sddm/Xsetup-dwm-btw" /etc/sddm/Xsetup-dwm-btw
+		local xs; xs=$(mktemp)
+		sed "s/^setxkbmap -layout fr,ir$/setxkbmap -layout $LAYOUTS/" "$REPO/system/etc/sddm/Xsetup-dwm-btw" > "$xs"
+		run sudo install -Dm755 "$xs" /etc/sddm/Xsetup-dwm-btw
+		rm -f "$xs"
 		run sudo install -Dm755 "$REPO/system/usr/local/bin/dwm-session" /usr/local/bin/dwm-session
 		run sudo install -Dm644 "$REPO/system/usr/local/share/xsessions/dwm.desktop" /usr/local/share/xsessions/dwm.desktop
 		run sudo systemctl enable sddm.service
@@ -210,10 +236,25 @@ setup_system() {
 	run fc-cache -f
 }
 
+# ---------------------------------------------------------------- keyboard profile
+save_keyboard() {
+	step "Keyboard profile: $KEYBOARD  (layouts $LAYOUTS)"
+	if [ "$KEYBOARD" = qwerty ]; then info "workspaces: Mod + 1 … 9 0   screens: Mod + . / ,"
+	else info "workspaces: Mod + & é \" ' ( - è _ ç à   screens: Mod + ; / ,"; fi
+	if (( KBD_GIVEN )) || [ ! -f "$KBD_CONF" ]; then
+		if (( DRY )); then info "[dry] write $KBD_CONF"
+		else mkdir -p "$(dirname "$KBD_CONF")"
+			printf '# dwm-btw keyboard profile (dwm-keyboard / install.sh --keyboard)\nKEYBOARD=%s\nLAYOUTS=%s\n' \
+				"$KEYBOARD" "$LAYOUTS" > "$KBD_CONF"; fi
+	fi
+	info "change later: dwm-keyboard set azerty|qwerty [layouts]"
+}
+
 # ---------------------------------------------------------------- main
 printf '%sdwm-dotfiles installer%s  (repo: %s)\n' "$c_blue" "$c_off" "$REPO"
 (( DRY )) && warn "dry run — nothing will be changed"
 
+save_keyboard
 if (( ONLY_CONFIGS )); then
 	deploy_configs
 	deploy_mic_filter

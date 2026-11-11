@@ -14,7 +14,8 @@ sudo pacman -S --needed git
 git clone https://github.com/shahinabdi/dwm-dotfiles.git
 cd dwm-dotfiles
 ./install.sh --dry-run   # see what it would do
-./install.sh
+./install.sh                      # French AZERTY keyboard (default)
+./install.sh --keyboard qwerty    # QWERTY keyboard (US / UK / most others)
 ```
 
 Then log in on a TTY and run `startx`.
@@ -26,6 +27,21 @@ Then log in on a TTY and run `startx`.
 | `--no-apps` | skip the workspace apps |
 | `--no-aur` | skip AUR packages (Brave, VS Code, Proton Mail) and yay |
 | `--configs` | only deploy configs (+ the mic filter); no packages, build or services |
+| `--no-sddm` | keep logging in from a TTY with `startx` |
+| `--keyboard azerty\|qwerty` | which keys the workspace / screen shortcuts use (default `azerty`) |
+| `--layouts us,ir` | keyboard layouts, `Mod+Space` cycles (default `fr,ir`, or `us,ir` with qwerty) |
+
+### Keyboard profiles
+
+| | AZERTY (default) | QWERTY |
+|---|---|---|
+| workspace 1–10 | `Mod + & é " ' ( - è _ ç à` | `Mod + 1 … 9 0` |
+| move window to workspace | `Mod + Shift + & … à` | `Mod + Shift + 1 … 0` |
+| next / previous screen | `Mod + ;` / `Mod + ,` | `Mod + .` / `Mod + ,` |
+| layouts | `fr,ir` | `us,ir` |
+
+Everything else is identical. The choice is saved in `~/.config/dwm-btw.conf`; switch later with
+`dwm-keyboard set qwerty` (or `azerty`), which rebuilds and restarts dwm in place.
 
 `DWM_DIR` (default `~/dwm-btw`) and `DWM_REPO` choose where dwm is cloned from/to.
 
@@ -34,9 +50,9 @@ What it does:
 1. installs packages from `packages/core.txt`, `apps.txt` (pacman) and `aur.txt` (yay, installed if missing)
 2. copies every path in `manifest.txt` from `home/` into `$HOME`; files that differ are first backed up
    as `<file>.bak-<timestamp>`, identical files are left alone, so re-running is safe
-3. clones and builds dwm (`make && sudo make install`), links its scripts into `~/.local/bin`,
+3. clones and builds dwm (`make KEYBOARD=azerty|qwerty && sudo make install`), links its scripts into `~/.local/bin`,
    compiles `xkb-group`
-4. touchpad tap-to-click + natural scrolling, keyboard layouts `fr,ir`, enables NetworkManager,
+4. touchpad tap-to-click + natural scrolling, keyboard layouts (`fr,ir` or `--layouts`), enables NetworkManager,
    Bluetooth and PipeWire
 5. creates the RNNoise noise-cancelling mic for this machine's microphone and makes it the default
    (needs PipeWire running — if you install from a TTY, run `./install.sh --configs` again after `startx`)
@@ -86,14 +102,14 @@ Rules and icons are in `rules.h` / `tags.h` in the dwm repo.
 | Mod+Shift+h | cheat sheet with every binding |
 | Mod+Return / Mod+d | terminal / app launcher |
 | Mod+a | quick-settings sidebar |
-| Mod+& é " ' ( - è _ ç à | workspace 1–10 (Shift = move window) |
-| Mod+Space | keyboard layout fr ⇄ ir |
+| Mod+& é " ' ( - è _ ç à (QWERTY: Mod+1 … 0) | workspace 1–10 (Shift = move window) |
+| Mod+Space | next keyboard layout (fr ⇄ ir / us ⇄ ir) |
 | Mod+v | clipboard history |
 | Mod+Shift+s / Print | screenshot region / full screen (Mod+Print: menu) |
 | Mod+Escape | power menu |
 | Mod+Shift+d | display: scale, font size, resolution |
 | Mod+Ctrl+Shift+q | restart dwm in place |
-| Mod+; / Mod+, | focus next / previous screen (each screen has its own workspaces) |
+| Mod+; / Mod+, (QWERTY: Mod+. / Mod+,) | focus next / previous screen (each screen has its own workspaces) |
 | Mod+Shift+; / , | move window to next / previous screen |
 | Mod+w / Mod+Shift+w | wallpaper picker / next wallpaper |
 | Mod+Shift+c | colour picker |

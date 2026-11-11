@@ -4,9 +4,9 @@ xsettingsd &   # live GTK settings (theme, font size)
 xsetroot -cursor_name left_ptr
 
 # keyboard: the system-wide layout lives in /etc/X11/xorg.conf.d/00-keyboard.conf
-# (set with `sudo localectl set-x11-keymap fr`) so hot-plugged / reconnected
-# keyboards also get fr. This line is only a fallback.
-setxkbmap -layout fr,ir
+# (set by install.sh with localectl) so hot-plugged / reconnected keyboards get it too.
+# This line is only a fallback: layouts from ~/.config/dwm-btw.conf (dwm-keyboard), default fr,ir.
+"$HOME/.local/bin/dwm-keyboard" apply 2>/dev/null || setxkbmap -layout fr,ir
 xset r rate 250 40
 
 # let user services (pipewire, etc.) see the X display
