@@ -13,7 +13,7 @@ Row {
         model: chipRow.values
         Rectangle {
             required property var modelData
-            readonly property bool on: Math.abs(Number(chipRow.current) - Number(modelData)) < 0.001
+            readonly property bool on: String(chipRow.current) === String(modelData) || Math.abs(Number(chipRow.current) - Number(modelData)) < 0.001
             width: (chipRow.width - chipRow.spacing * (chipRow.values.length - 1)) / chipRow.values.length
             height: 30
             radius: 8

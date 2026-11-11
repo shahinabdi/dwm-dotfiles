@@ -18,6 +18,10 @@ Item {
     property int nmaster: 1
     property int windows: 0
     property int hovered: -1
+    property bool gaps: true
+    property int gapInner: 10
+    property int gapOuter: 10
+    property bool smartGaps: true
 
     // index order = layouts[] in dwm's config.h
     readonly property var layouts: [
@@ -67,19 +71,21 @@ Item {
                     else if (k === "mfact") root.mfact = Number(v)
                     else if (k === "nmaster") root.nmaster = Number(v)
                     else if (k === "windows") root.windows = Number(v)
+                    else if (k === "gaps") root.gaps = v === "1"
+                    else if (k === "gapinner") root.gapInner = Number(v)
+                    else if (k === "gapouter") root.gapOuter = Number(v)
+                    else if (k === "smartgaps") root.smartGaps = v === "1"
                 }
             }
         }
     }
 
-    Process {
-        id: runProcess
-        onExited: root.refresh()
-    }
+    // every click starts its own command (rapid clicks are never dropped), then refresh
+    Timer { id: refreshSoon; interval: 350; onTriggered: root.refresh() }
 
     function run(args) {
-        runProcess.command = ["dwm-layout"].concat(args)
-        runProcess.running = true
+        Quickshell.execDetached(["dwm-layout"].concat(args))
+        refreshSoon.restart()
     }
 
     Timer { interval: 1500; running: true; repeat: true; onTriggered: root.refresh() }
@@ -122,7 +128,10 @@ Item {
                 }
                 Text {
                     text: root.windows + (root.windows === 1 ? " window" : " windows") + "  ·  master "
-                          + root.nmaster + "  ·  " + Math.round(root.mfact * 100) + "%"
+                          + root.nmaster + "  ·  " + Math.round(root.mfact * 100) + "%  ·  "
+                          + (root.gaps ? "gaps " + root.gapInner + "/" + root.gapOuter : "no gaps")
+                    width: header.width - 46 - 12 - 40
+                    elide: Text.ElideRight
                     color: "#7aa2f7"
                     font.pixelSize: 11
                 }
@@ -315,12 +324,107 @@ Item {
                 }
             }
 
+            // ---------------------------------------------------------------- gaps
+            Rectangle { width: parent.width; height: 1; color: "#414868" }
+
+            Row {
+                width: parent.width
+                spacing: 8
+                Column {
+                    width: parent.width - 58 - 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    Text { text: "Gaps"; color: "#c0caf5"; font.pixelSize: 13; font.bold: true }
+                    Text { text: "space around windows · Super+Shift+G"; color: "#565f89"; font.pixelSize: 9; width: parent.width; elide: Text.ElideRight }
+                }
+                Switch2 { on: root.gaps; onToggled: root.run(["gaps", root.gaps ? "off" : "on"]) }
+            }
+
+            Row {
+                width: parent.width
+                spacing: 8
+                opacity: root.gaps ? 1 : 0.4
+                Column {
+                    width: parent.width - 3 * 34 - 2 * 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    Text { text: "Inner gap"; color: "#c0caf5"; font.pixelSize: 13; font.bold: true }
+                    Text { text: "between windows"; color: "#565f89"; font.pixelSize: 9 }
+                }
+                ActionButton {
+                    width: 34; height: 30; implicitHeight: 30; radius: 8
+                    glyph: 0xF0374; iconSize: 14; label: ""
+                    onClicked: root.run(["inner", "-2"])
+                }
+                Text {
+                    width: 34
+                    anchors.verticalCenter: parent.verticalCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    text: root.gapInner + "px"
+                    color: "#7aa2f7"
+                    font.pixelSize: 12
+                    font.bold: true
+                }
+                ActionButton {
+                    width: 34; height: 30; implicitHeight: 30; radius: 8
+                    glyph: 0xF0415; iconSize: 14; label: ""
+                    onClicked: root.run(["inner", "+2"])
+                }
+            }
+
+            Row {
+                width: parent.width
+                spacing: 8
+                opacity: root.gaps ? 1 : 0.4
+                Column {
+                    width: parent.width - 3 * 34 - 2 * 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    Text { text: "Outer gap"; color: "#c0caf5"; font.pixelSize: 13; font.bold: true }
+                    Text { text: "to the screen edge"; color: "#565f89"; font.pixelSize: 9 }
+                }
+                ActionButton {
+                    width: 34; height: 30; implicitHeight: 30; radius: 8
+                    glyph: 0xF0374; iconSize: 14; label: ""
+                    onClicked: root.run(["outer", "-2"])
+                }
+                Text {
+                    width: 34
+                    anchors.verticalCenter: parent.verticalCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    text: root.gapOuter + "px"
+                    color: "#7aa2f7"
+                    font.pixelSize: 12
+                    font.bold: true
+                }
+                ActionButton {
+                    width: 34; height: 30; implicitHeight: 30; radius: 8
+                    glyph: 0xF0415; iconSize: 14; label: ""
+                    onClicked: root.run(["outer", "+2"])
+                }
+            }
+
+            Row {
+                width: parent.width
+                spacing: 8
+                opacity: root.gaps ? 1 : 0.4
+                Column {
+                    width: parent.width - 58 - 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    Text { text: "Smart gaps"; color: "#c0caf5"; font.pixelSize: 13; font.bold: true }
+                    Text { text: "no gaps when only one window is open"; color: "#565f89"; font.pixelSize: 9; width: parent.width; elide: Text.ElideRight }
+                }
+                Switch2 { on: root.smartGaps; onToggled: root.run(["smart", root.smartGaps ? "off" : "on"]) }
+            }
+
             Text {
                 width: parent.width
-                text: "Super + Shift + ← / → cycles layouts · Super + Shift + L opens the layout menu · scroll on the bar's layout symbol"
+                text: "Super + Shift + ← / → cycles layouts · Super + Shift + L opens the layout menu · Super + Shift + ↑ / ↓ resizes gaps"
                 color: "#565f89"
                 font.pixelSize: 9
                 wrapMode: Text.WordWrap
+            }
+
+            ResetButton {
+                what: "layout & gaps"
+                onConfirmed: root.run(["reset"])
             }
         }
     }

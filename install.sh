@@ -107,7 +107,11 @@ deploy_configs() {
 		fi
 		info "$p"
 	done < "$REPO/manifest.txt"
-	run mkdir -p "$HOME/Pictures/Screenshots" "$HOME/.local/bin"
+	run mkdir -p "$HOME/Pictures/Screenshots" "$HOME/Pictures/Wallpapers" "$HOME/.local/bin"
+	# starter wallpapers (never overwrites); the dwm repo's current.jpg is added after it is cloned
+	for f in "$REPO"/wallpapers/*; do
+		[ -e "$HOME/Pictures/Wallpapers/$(basename "$f")" ] || run cp "$f" "$HOME/Pictures/Wallpapers/"
+	done
 	(( DRY )) || systemctl --user daemon-reload 2>/dev/null || true
 }
 
@@ -161,6 +165,8 @@ build_dwm() {
 		info "xkb-group (compiled)"
 	fi
 	(( DRY )) || printf 'DWM_DIR=%q\n' "$DWM_DIR" > "$HOME/.config/dwm-dev.conf"
+	[ -f "$DWM_DIR/current.jpg" ] && [ ! -e "$HOME/Pictures/Wallpapers/mountain-lake.jpg" ] &&
+		run cp "$DWM_DIR/current.jpg" "$HOME/Pictures/Wallpapers/mountain-lake.jpg"
 
 	case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *)
 		warn "~/.local/bin is not in PATH — add to ~/.bashrc:  export PATH=\"\$HOME/.local/bin:\$PATH\"" ;;

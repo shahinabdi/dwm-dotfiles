@@ -20,7 +20,7 @@ ShellRoot {
         stdout: StdioCollector {
             onStreamFinished: {
                 const m = this.text.match(/barh=(\d+)/)
-                if (m) root.barHeight = Number(m[1])
+                if (m && Number(m[1]) >= 10 && Number(m[1]) <= 200) root.barHeight = Number(m[1])
             }
         }
     }
@@ -157,6 +157,11 @@ ShellRoot {
                     }
 
                     DisplayCard {
+                        width: parent.width
+                        onRequestClose: root.sidebarVisible = false
+                    }
+
+                    WallpaperCard {
                         width: parent.width
                         onRequestClose: root.sidebarVisible = false
                     }

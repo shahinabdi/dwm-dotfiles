@@ -212,6 +212,11 @@ Item {
                     }
                 }
             }
+
+            ResetButton {
+                what: "display"
+                onConfirmed: { root.run(["reset"]) }
+            }
         }
     }
 

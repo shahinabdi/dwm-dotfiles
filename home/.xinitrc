@@ -15,7 +15,7 @@ systemctl --user restart clipmenud   # clipboard history (Mod+v)
 systemctl --user reset-failed picom 2>/dev/null; systemctl --user restart picom   # compositor (auto-restarts, logs: journalctl --user -u picom)
 
 dwm-display apply   # saved resolution (Mod+Shift+d)
-feh --bg-fill "$HOME/dwm-btw/current.jpg"
+dwm-wall restore   # wallpaper + slideshow (Mod+w)
 dunst &
 dwm-status &
 qs -c arch-sidebar &   # quickshell sidebar (Mod+a)
