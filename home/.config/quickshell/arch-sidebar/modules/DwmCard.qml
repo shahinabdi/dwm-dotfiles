@@ -12,8 +12,31 @@ Item {
     signal requestClose()
 
     property string dwmDir: ""
+    // keyboard profile (dwm-keyboard): which keys the workspace / screen shortcuts use
+    property string kbProfile: ""
+    property string kbLayouts: ""
+    property string kbPending: ""      // picked but not applied yet (needs a rebuild)
 
-    function refresh() { pathProcess.running = true }
+    readonly property var kbInfo: ({
+        "azerty": { label: "AZERTY", keys: "Workspaces  Super + & é \" ' ( - è _ ç à   ·   next screen  Super + ;", layouts: "fr,ir" },
+        "qwerty": { label: "QWERTY", keys: "Workspaces  Super + 1 … 9 0   ·   next screen  Super + .", layouts: "us,ir" }
+    })
+
+    function refresh() { pathProcess.running = true; kbProcess.running = true }
+
+    Process {
+        id: kbProcess
+        running: true
+        command: ["sh", "-c", "dwm-keyboard get profile; dwm-keyboard get layouts"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const l = this.text.trim().split("\n")
+                root.kbProfile = l[0] || "azerty"
+                root.kbLayouts = l[1] || ""
+                if (root.kbPending === root.kbProfile) root.kbPending = ""
+            }
+        }
+    }
 
     // read the saved folder without prompting
     Process {
@@ -23,6 +46,11 @@ Item {
         stdout: StdioCollector {
             onStreamFinished: root.dwmDir = this.text.trim()
         }
+    }
+
+    function run2(cmd) {   // any command, after the sidebar closed
+        root.requestClose()
+        Quickshell.execDetached(["sh", "-c", "sleep 0.3; " + cmd])
     }
 
     function run(args) {
@@ -95,6 +123,64 @@ Item {
             ActionButton { width: btns.cellWidth; glyph: 0xF0AA8; label: "Rebuild"; accent: "#9ece6a"; onClicked: root.run("build") }
             ActionButton { width: btns.cellWidth; glyph: 0xF03EB; label: "Edit";    accent: "#e0af68"; onClicked: root.run("edit") }
             ActionButton { width: btns.cellWidth; glyph: 0xF0770; label: "Folder";  accent: "#bb9af7"; onClicked: root.run("folder") }
+        }
+
+        // ---- keyboard profile
+        Item { width: 1; height: 4 }
+        RowTitle { title: "Keyboard"; value: root.kbProfile ? root.kbInfo[root.kbProfile].label + "  ·  " + root.kbLayouts : "" }
+        ChipRow {
+            values: ["azerty", "qwerty"]
+            current: root.kbPending || root.kbProfile
+            label: v => v === "azerty" ? "AZERTY  (fr)" : "QWERTY  (us)"
+            onPicked: v => root.kbPending = (v === root.kbProfile ? "" : v)
+        }
+        Text {
+            width: parent.width
+            text: root.kbInfo[root.kbPending || root.kbProfile || "azerty"].keys
+            color: "#565f89"
+            font.pixelSize: 10
+            wrapMode: Text.WordWrap
+        }
+
+        // confirm: only shown after picking the other profile
+        Rectangle {
+            visible: root.kbPending !== ""
+            width: parent.width
+            height: visible ? confirmCol.implicitHeight + 16 : 0
+            radius: 10
+            color: "#1f2335"
+            border.width: 1
+            border.color: "#e0af68"
+
+            Column {
+                id: confirmCol
+                anchors.fill: parent
+                anchors.margins: 8
+                spacing: 6
+
+                Text {
+                    width: parent.width
+                    text: root.kbPending ? "Switch to " + root.kbInfo[root.kbPending].label + " (layouts "
+                          + root.kbInfo[root.kbPending].layouts + ")? dwm is rebuilt in a terminal (asks for sudo) and restarts in place — windows stay open." : ""
+                    color: "#c0caf5"
+                    font.pixelSize: 11
+                    wrapMode: Text.WordWrap
+                }
+                Row {
+                    id: cbtns
+                    width: parent.width
+                    spacing: 6
+                    readonly property real cellWidth: (width - spacing) / 2
+                    ActionButton {
+                        width: cbtns.cellWidth; glyph: 0xF0AA8; label: "Apply"; accent: "#9ece6a"
+                        onClicked: { const p = root.kbPending; root.kbPending = ""; root.run2("dwm-keyboard set " + p) }
+                    }
+                    ActionButton {
+                        width: cbtns.cellWidth; glyph: 0xF0156; label: "Cancel"; accent: "#f7768e"
+                        onClicked: root.kbPending = ""
+                    }
+                }
+            }
         }
     }
 

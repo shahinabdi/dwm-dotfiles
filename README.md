@@ -41,7 +41,8 @@ Then log in on a TTY and run `startx`.
 | layouts | `fr,ir` | `us,ir` |
 
 Everything else is identical. The choice is saved in `~/.config/dwm-btw.conf`; switch later with
-`dwm-keyboard set qwerty` (or `azerty`), which rebuilds and restarts dwm in place.
+`dwm-keyboard set qwerty` (or `azerty`), or in the sidebar under **Settings → DWM → Keyboard**; either way
+dwm is rebuilt and restarted in place.
 
 `DWM_DIR` (default `~/dwm-btw`) and `DWM_REPO` choose where dwm is cloned from/to.
 
