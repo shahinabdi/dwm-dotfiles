@@ -7,7 +7,7 @@ configuration {
     display-run:         " ";
     display-window:      "󰖯 ";
     /* font size is changed by dwm-display (Mod+Shift+d) — keep it on this line */
-    font: "UbuntuSans Nerd Font 13";
+    font: "Vazirmatn 13";
 }
 
 @theme "~/.config/rofi/themes/tokyo-dwm.rasi"
