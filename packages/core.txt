@@ -15,4 +15,4 @@ autorandr
 sddm qt6-5compat qt6-svg
 # look: themes, icons, cursors, fonts
 gnome-themes-extra adw-gtk-theme papirus-icon-theme capitaine-cursors qt5ct qt6ct
-ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-go-nerd ttf-dejavu vazirmatn-fonts
+ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-go-nerd ttf-dejavu

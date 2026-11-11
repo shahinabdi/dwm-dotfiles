@@ -1,2 +1,4 @@
 # workspace apps (AUR, installed with yay): 2 Brave, 3 VS Code, 5 Proton Mail
 brave-bin visual-studio-code-bin proton-mail-bin
+# Persian font (interface font option; the AUR is used only without --no-aur / --no-apps)
+vazirmatn-fonts
