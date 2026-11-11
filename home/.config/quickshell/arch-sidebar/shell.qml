@@ -90,6 +90,9 @@ ShellRoot {
 
         implicitWidth: Math.max(300, Math.min(520, settings.width))
 
+        // keyboard input (search fields, Wi-Fi password)
+        focusable: true
+
         // push: dwm keeps tiled windows out of the panel's space (via the strut); overlay: float above
         exclusionMode: settings.mode === "push" ? ExclusionMode.Auto : ExclusionMode.Ignore
 

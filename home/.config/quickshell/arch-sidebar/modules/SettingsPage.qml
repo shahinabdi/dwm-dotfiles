@@ -85,7 +85,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 2
             Text { text: "Settings"; color: "#c0caf5"; font.pixelSize: 20; font.bold: true }
-            Text { text: "bar · sidebar · monitors · dwm"; color: "#565f89"; font.pixelSize: 10 }
+            Text { text: "bar · sidebar · fonts · monitors · dwm"; color: "#565f89"; font.pixelSize: 10 }
         }
     }
 
@@ -212,6 +212,13 @@ Rectangle {
                 width: parent.width
                 settings: page.settings
                 expanded: true
+            }
+
+            // ---- fonts
+            SectionTitle { text: "FONTS" }
+
+            FontsCard {
+                width: parent.width
             }
 
             // ---- monitors

@@ -93,3 +93,10 @@ Rules and icons are in `rules.h` / `tags.h` in the dwm repo.
 | Mod+Escape | power menu |
 | Mod+Shift+d | display: scale, font size, resolution |
 | Mod+Ctrl+Shift+q | restart dwm in place |
+| Mod+; / Mod+, | focus next / previous screen (each screen has its own workspaces) |
+| Mod+Shift+; / , | move window to next / previous screen |
+| Mod+w / Mod+Shift+w | wallpaper picker / next wallpaper |
+| Mod+Shift+c | colour picker |
+| Mod+Shift+g, Mod+Shift+↑/↓ | gaps on/off, bigger/smaller |
+| Mod+Shift+←/→, Mod+Shift+l | cycle layouts, layout menu |
+| Mod+a → ⚙ | settings: bar items, sidebar side/push, fonts (Nerd Fonts), monitors, dwm |
