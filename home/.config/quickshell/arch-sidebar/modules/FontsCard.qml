@@ -2,7 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Fonts (Settings page): which Nerd Font the interface / terminal / bar use, and the
+// Fonts (Settings page): which font the interface (any installed font) / terminal / bar
+// (Nerd Fonts or other monospace fonts) use, and the
 // online Nerd Fonts library (install / remove). Everything goes through ~/.local/bin/dwm-font.
 Item {
     id: root
@@ -11,7 +12,8 @@ Item {
     height: col.implicitHeight
 
     property var current: ({ interface: "", terminal: "", bar: "" })
-    property var families: []
+    property var families: ({ interface: [], terminal: [] })   // [{ kind: "nerd"|"system", name }]
+    property string pickFilter: ""    // search inside the open picker
     property var library: []          // [{ name, installed, ours, mb }]
     property string picking: ""       // target whose picker is open
     property string filter: ""
@@ -41,8 +43,18 @@ Item {
     }
     Process {
         id: famP
-        command: ["dwm-font", "families"]
-        stdout: StdioCollector { onStreamFinished: root.families = this.text.split("\n").filter(l => l) }
+        // interface: every installed font · terminal / bar: monospace (Nerd Fonts first)
+        command: ["sh", "-c", "dwm-font families interface | sed 's/^/interface|/'; dwm-font families terminal | sed 's/^/terminal|/'"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const f = { interface: [], terminal: [] }
+                for (const l of this.text.split("\n")) {
+                    const p = l.split("|"); if (p.length < 3 || !f[p[0]]) continue
+                    f[p[0]].push({ kind: p[1], name: p.slice(2).join("|") })
+                }
+                root.families = f
+            }
+        }
     }
     Process {
         id: libP
@@ -190,31 +202,126 @@ Item {
                         }
                     }
 
-                    // picker: every installed family, shown in its own font
+                    // picker: search + every font this target can use, each shown in its own font
                     Column {
+                        id: picker
                         visible: row.open
                         width: parent.width
-                        spacing: 4
-                        Repeater {
-                            model: row.modelData.key === "bar" ? ["default"].concat(root.families) : root.families
-                            Rectangle {
-                                required property string modelData
-                                width: rowCol.width
-                                height: 30
-                                radius: 7
-                                readonly property bool sel: (root.current[row.modelData.key] || "").startsWith(modelData === "default" ? "JetBrains Mono (default)" : modelData)
-                                color: sel ? "#7aa2f7" : (fm.containsMouse ? "#2f3549" : "#24283b")
-                                Text {
-                                    anchors.left: parent.left
-                                    anchors.leftMargin: 10
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: modelData === "default" ? "Default — JetBrains Mono + big icons" : modelData
-                                    font.family: modelData === "default" ? "JetBrains Mono" : modelData
-                                    font.pixelSize: 13
-                                    color: parent.sel ? "#1a1b26" : "#c0caf5"
+                        spacing: 6
+
+                        // filtered fonts with a heading row before each group
+                        readonly property var items: {
+                            const all = (row.modelData.key === "interface" ? root.families.interface : root.families.terminal) || []
+                            const base = row.modelData.key === "bar" ? [{ kind: "nerd", name: "default" }].concat(all) : all
+                            const q = root.pickFilter
+                            const out = []
+                            let last = ""
+                            for (const f of base) {
+                                if (q && !f.name.toLowerCase().includes(q)) continue
+                                if (f.kind !== last) {
+                                    last = f.kind
+                                    out.push({ kind: "header", name: f.kind === "nerd" ? "NERD FONTS"
+                                        : (row.modelData.key === "interface" ? "OTHER INSTALLED FONTS" : "OTHER MONOSPACE FONTS") })
                                 }
-                                MouseArea { id: fm; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.setFont(row.modelData.key, modelData) }
+                                out.push(f)
+                            }
+                            return out
+                        }
+
+                        Rectangle {
+                            width: parent.width
+                            height: 30
+                            radius: 8
+                            color: "#16161e"
+                            border.width: 1
+                            border.color: pickSearch.activeFocus ? "#7aa2f7" : "#414868"
+                            Text {
+                                x: 9
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: String.fromCodePoint(0xF0349)
+                                font.family: "JetBrainsMono Nerd Font Mono"
+                                font.pixelSize: 13
+                                color: "#565f89"
+                            }
+                            TextInput {
+                                id: pickSearch
+                                x: 30
+                                width: parent.width - 40
+                                anchors.verticalCenter: parent.verticalCenter
+                                color: "#c0caf5"
+                                font.pixelSize: 12
+                                selectByMouse: true
+                                clip: true
+                                onTextChanged: root.pickFilter = text.toLowerCase()
+                                Connections { target: row; function onOpenChanged() { pickSearch.text = "" } }
+                                Text {
+                                    visible: !pickSearch.text
+                                    text: row.modelData.key === "interface" ? "search all installed fonts (e.g. vazirmatn)…" : "search monospace fonts…"
+                                    color: "#565f89"; font.pixelSize: 12
+                                }
+                            }
+                        }
+
+                        Rectangle {
+                            width: parent.width
+                            height: Math.min(300, Math.max(34, fontList.contentHeight + 8))
+                            radius: 8
+                            color: "#16161e"
+                            border.width: 1
+                            border.color: "#414868"
+                            clip: true
+
+                            ListView {
+                                id: fontList
+                                anchors.fill: parent
+                                anchors.margins: 4
+                                spacing: 3
+                                boundsBehavior: Flickable.StopAtBounds
+                                model: picker.items
+                                delegate: Rectangle {
+                                    required property var modelData
+                                    readonly property string fam: modelData.name
+                                    readonly property bool header: modelData.kind === "header"
+                                    width: fontList.width
+                                    height: header ? 22 : 30
+                                    radius: 7
+                                    // selected: same family, maybe followed by a weight ("… Ultra-Light")
+                                    readonly property bool sel: {
+                                        if (header) return false
+                                        const cur = root.current[row.modelData.key] || ""
+                                        if (fam === "default") return cur === "JetBrains Mono (default)"
+                                        return cur === fam || (cur.startsWith(fam + " ") && /^(Thin|Ultra-?Light|Extra-?Light|Light|Regular|Medium|Semi-?Bold|Bold|Extra-?Bold|Black)$/.test(cur.slice(fam.length + 1)))
+                                    }
+                                    color: header ? "transparent" : sel ? "#7aa2f7" : (fm.containsMouse ? "#2f3549" : "#24283b")
+                                    Text {
+                                        visible: parent.header
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        leftPadding: 6
+                                        text: parent.fam
+                                        color: "#7aa2f7"; font.pixelSize: 9; font.bold: true; font.letterSpacing: 1
+                                    }
+                                    Text {
+                                        visible: !parent.header
+                                        anchors.left: parent.left
+                                        anchors.leftMargin: 10
+                                        anchors.right: parent.right
+                                        anchors.rightMargin: 10
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: fam === "default" ? "Default — JetBrains Mono + big icons" : fam
+                                        font.family: fam === "default" ? "JetBrains Mono" : fam
+                                        font.pixelSize: 13
+                                        elide: Text.ElideRight
+                                        color: parent.sel ? "#1a1b26" : "#c0caf5"
+                                    }
+                                    MouseArea { id: fm; anchors.fill: parent; enabled: !parent.header; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                        onClicked: root.setFont(row.modelData.key, fam) }
+                                }
+                            }
+                            Text {
+                                visible: fontList.count === 0
+                                anchors.centerIn: parent
+                                text: "no installed font matches"
+                                color: "#565f89"; font.pixelSize: 11
                             }
                         }
                         Text {
