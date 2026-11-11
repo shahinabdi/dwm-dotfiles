@@ -1,10 +1,10 @@
 [global]
     font = JetBrainsMono Nerd Font 10
     origin = top-right
-    offset = (12, 42)
+    offset = (12, 47)
     width = 300
     frame_width = 1
-    frame_color = "#69a7ff"
+    frame_color = "#7aa2f7"
     separator_color = frame
     corner_radius = 6
     padding = 10
@@ -12,23 +12,23 @@
     progress_bar = true
     progress_bar_height = 8
     progress_bar_frame_width = 0
-    highlight = "#69a7ff"
+    highlight = "#7aa2f7"
     markup = full
     format = "<b>%s</b>\n%b"
 
 [urgency_low]
-    background = "#0b111a"
-    foreground = "#7d90ab"
+    background = "#1a1b26"
+    foreground = "#a9b1d6"
     timeout = 3
 
 [urgency_normal]
-    background = "#121a26"
-    foreground = "#d6deea"
+    background = "#1f2335"
+    foreground = "#c0caf5"
     timeout = 5
 
 [urgency_critical]
-    background = "#121a26"
-    foreground = "#d6deea"
-    frame_color = "#e6a567"
-    highlight = "#e6a567"
+    background = "#1f2335"
+    foreground = "#c0caf5"
+    frame_color = "#e0af68"
+    highlight = "#e0af68"
     timeout = 0

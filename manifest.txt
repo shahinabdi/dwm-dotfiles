@@ -11,6 +11,10 @@
 .config/rofi/themes/tokyo-dwm.rasi
 .config/gtk-3.0/settings.ini
 .config/gtk-4.0/settings.ini
+.config/gtk-3.0/gtk.css
+.config/gtk-4.0/gtk.css
+.config/qt5ct/colors/tokyo-night.conf
+.config/qt6ct/colors/tokyo-night.conf
 .config/qt5ct/qt5ct.conf
 .config/qt6ct/qt6ct.conf
 .config/xsettingsd/xsettingsd.conf
