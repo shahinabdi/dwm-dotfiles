@@ -11,6 +11,8 @@ networkmanager bluez bluez-utils brightnessctl
 maim xclip xdotool flameshot clipmenu i3lock xcolor
 # monitors: hotplug + saved layouts
 autorandr
+# login screen: SDDM + Sugar Candy (Qt6 port in sddm/)
+sddm qt6-5compat qt6-svg
 # look: themes, icons, cursors, fonts
 gnome-themes-extra adw-gtk-theme papirus-icon-theme capitaine-cursors qt5ct qt6ct
 ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-go-nerd

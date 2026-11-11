@@ -70,10 +70,9 @@ Item {
             Column {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 3
-                Text { text: "Scale & size"; color: "#c0caf5"; font.pixelSize: 14; font.bold: true }
+                Text { text: "Screen & bar"; color: "#c0caf5"; font.pixelSize: 14; font.bold: true }
                 Text {
-                    text: root.scale + "%  ·  bar " + root.barScale.toFixed(2).replace(/\.?0+$/, "") + "×  ·  font "
-                          + (root.fontSize || "–") + "  ·  " + (root.resolution || "…")
+                    text: "screen " + root.scale + "%  ·  bar " + root.barScale.toFixed(2).replace(/\.?0+$/, "") + "×  ·  " + (root.resolution || "…")
                     color: "#7aa2f7"
                     font.pixelSize: 11
                     width: header.width - 44
@@ -130,7 +129,7 @@ Item {
                 current: root.scale
                 onPicked: v => { root.scale = v; root.run(["scale", String(v)]) }
             }
-            Text { text: "Scales the whole screen instantly"; color: "#565f89"; font.pixelSize: 10 }
+            Text { width: parent.width; wrapMode: Text.WordWrap; text: "Everything gets bigger at once: bar, windows, menus, this sidebar. Instant."; color: "#565f89"; font.pixelSize: 10 }
 
             RowTitle { title: "Bar size"; value: root.barScale.toFixed(2).replace(/\.?0+$/, "") + "×" }
             ChipRow {
@@ -139,40 +138,7 @@ Item {
                 label: v => Math.round(v * 100) + "%"
                 onPicked: v => { root.barScale = v; root.run(["bar", String(v)]) }
             }
-            Text { text: "dwm bar text + icons (restarts dwm in place)"; color: "#565f89"; font.pixelSize: 10 }
-
-            // font size
-            Row {
-                width: parent.width
-                spacing: 8
-                Text {
-                    text: "Font size"
-                    color: "#c0caf5"
-                    font.pixelSize: 14
-                    font.bold: true
-                    width: parent.width - 3 * 34 - 2 * 8
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-                ActionButton {
-                    width: 34; height: 30; implicitHeight: 30; radius: 8
-                    glyph: 0xF0374; iconSize: 14; label: ""
-                    onClicked: { root.fontSize -= 1; root.run(["font", "-"]) }
-                }
-                Text {
-                    width: 34
-                    anchors.verticalCenter: parent.verticalCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    text: root.fontSize > 0 ? root.fontSize : "–"
-                    color: "#7aa2f7"
-                    font.pixelSize: 13
-                    font.bold: true
-                }
-                ActionButton {
-                    width: 34; height: 30; implicitHeight: 30; radius: 8
-                    glyph: 0xF0415; iconSize: 14; label: ""
-                    onClicked: { root.fontSize += 1; root.run(["font", "+"]) }
-                }
-            }
+            Text { width: parent.width; wrapMode: Text.WordWrap; text: "Only the dwm bar: its text, icons and height (dwm restarts in place, windows stay)."; color: "#565f89"; font.pixelSize: 10 }
 
             // resolution
             Row {

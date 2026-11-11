@@ -204,11 +204,6 @@ ShellRoot {
                         width: parent.width
                     }
 
-                    DisplayCard {
-                        width: parent.width
-                        onRequestClose: root.sidebarVisible = false
-                    }
-
                     WallpaperCard {
                         width: parent.width
                         onRequestClose: root.sidebarVisible = false

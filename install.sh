@@ -8,6 +8,7 @@
 #   ./install.sh --no-apps     skip workspace apps (Thunar, Obsidian, OBS, Brave, Code, Proton Mail)
 #   ./install.sh --no-aur      skip AUR packages (and installing yay)
 #   ./install.sh --configs     only deploy configs (no packages, no dwm build, no services)
+#   ./install.sh --no-sddm     keep logging in with startx (no SDDM login screen)
 #
 # Env: DWM_DIR (default ~/dwm-btw)   DWM_REPO (default https://github.com/shahinabdi/dwm.git)
 #
@@ -20,7 +21,7 @@ DWM_DIR=${DWM_DIR:-$HOME/dwm-btw}
 DWM_REPO=${DWM_REPO:-https://github.com/shahinabdi/dwm.git}
 STAMP=$(date +%Y%m%d-%H%M%S)
 
-DRY=0 LINK=0 APPS=1 AUR=1 ONLY_CONFIGS=0
+DRY=0 LINK=0 APPS=1 AUR=1 ONLY_CONFIGS=0 SDDM=1
 for a in "$@"; do
 	case $a in
 		--dry-run) DRY=1 ;;
@@ -28,6 +29,7 @@ for a in "$@"; do
 		--no-apps) APPS=0 ;;
 		--no-aur)  AUR=0 ;;
 		--configs) ONLY_CONFIGS=1 ;;
+		--no-sddm) SDDM=0 ;;
 		-h|--help) sed -n '2,15p' "$0"; exit 0 ;;
 		*) echo "unknown option: $a (see --help)" >&2; exit 1 ;;
 	esac
@@ -184,6 +186,17 @@ setup_system() {
 	info "monitors: plug in a screen -> saved layout, or extended side by side (autorandr)"
 	run sudo localectl set-x11-keymap fr,ir pc105 "" ""
 	info "keyboard: fr + ir (Mod+Space switches)"
+
+	if (( SDDM )); then
+		step "Login screen (SDDM + Sugar Candy, French keyboard, dwm session = ~/.xinitrc)"
+		run sudo cp -r "$REPO/sddm/sugar-candy-dwm" /usr/share/sddm/themes/
+		run sudo install -Dm644 "$REPO/system/etc/sddm.conf.d/10-dwm-btw.conf" /etc/sddm.conf.d/10-dwm-btw.conf
+		run sudo install -Dm755 "$REPO/system/etc/sddm/Xsetup-dwm-btw" /etc/sddm/Xsetup-dwm-btw
+		run sudo install -Dm755 "$REPO/system/usr/local/bin/dwm-session" /usr/local/bin/dwm-session
+		run sudo install -Dm644 "$REPO/system/usr/local/share/xsessions/dwm.desktop" /usr/local/share/xsessions/dwm.desktop
+		run sudo systemctl enable sddm.service
+		info "SDDM starts at the next boot (pick the dwm session)"
+	fi
 
 	step "Services"
 	run sudo systemctl enable --now NetworkManager.service

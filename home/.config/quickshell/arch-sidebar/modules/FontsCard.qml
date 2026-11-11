@@ -17,8 +17,9 @@ Item {
     property string filter: ""
     property var busy: ({})           // name -> true while installing / removing
     property bool loading: false
+    property int textSize: 0          // dwm-display font size (kitty, GTK, Qt, rofi, notifications)
 
-    function refresh() { curP.running = true; famP.running = true }
+    function refresh() { curP.running = true; famP.running = true; sizeP.running = true }
     function loadLibrary(force) { root.loading = true; libP.command = ["dwm-font", "catalogue"].concat(force ? ["--refresh"] : []); libP.running = true }
     Component.onCompleted: { refresh(); loadLibrary(false) }
 
@@ -32,6 +33,11 @@ Item {
                 root.current = c
             }
         }
+    }
+    Process {
+        id: sizeP
+        command: ["dwm-display", "status"]
+        stdout: StdioCollector { onStreamFinished: { const m = this.text.match(/font=(\d+)/); if (m) root.textSize = Number(m[1]) } }
     }
     Process {
         id: famP
@@ -53,7 +59,14 @@ Item {
     Timer { id: settle; interval: 2500; repeat: true; property int left: 0
         onTriggered: { root.loadLibrary(false); root.refresh(); if (--left <= 0) { stop(); root.busy = ({}) } } }
 
-    function font(args) { Quickshell.execDetached(["dwm-font"].concat(args)) }
+    function font(args) {
+        if (args[0] === "__size") {   // text size lives in dwm-display
+            Quickshell.execDetached(["dwm-display", "font", args[1]])
+            settle.left = 1; settle.restart()
+            return
+        }
+        Quickshell.execDetached(["dwm-font"].concat(args))
+    }
     function setFont(target, fam) {
         root.picking = ""
         const c = Object.assign({}, root.current); c[target] = fam; root.current = c
@@ -70,6 +83,57 @@ Item {
         id: col
         width: parent.width
         spacing: 10
+
+        // ---------------------------------------------------------------- text size
+        Rectangle {
+            width: col.width
+            height: sizeCol.implicitHeight + 20
+            radius: 12
+            color: "#1f2335"
+            border.width: 1
+            border.color: "#414868"
+            Column {
+                id: sizeCol
+                x: 12
+                y: 10
+                width: parent.width - 24
+                spacing: 6
+                Row {
+                    width: parent.width
+                    spacing: 8
+                    Text {
+                        text: "Text size"
+                        color: "#c0caf5"; font.pixelSize: 13; font.bold: true
+                        width: parent.width - 3 * 34 - 2 * 8
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    ActionButton {
+                        width: 34; height: 30; implicitHeight: 30; radius: 8
+                        glyph: 0xF0374; iconSize: 14; label: ""
+                        onClicked: { root.textSize -= 1; root.font(["__size", "-"]) }
+                    }
+                    Text {
+                        width: 34
+                        anchors.verticalCenter: parent.verticalCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        text: root.textSize > 0 ? root.textSize : "–"
+                        color: "#7aa2f7"; font.pixelSize: 13; font.bold: true
+                    }
+                    ActionButton {
+                        width: 34; height: 30; implicitHeight: 30; radius: 8
+                        glyph: 0xF0415; iconSize: 14; label: ""
+                        onClicked: { root.textSize += 1; root.font(["__size", "+"]) }
+                    }
+                }
+                Text {
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                    text: "Changes: terminal (kitty, live) · GTK apps (live) · rofi menus · notifications · Qt apps (after restart). "
+                        + "Not the dwm bar — that's “Bar size” above — and not the whole screen — that's “Screen scale”."
+                    color: "#565f89"; font.pixelSize: 10
+                }
+            }
+        }
 
         // ---------------------------------------------------------------- current fonts
         Repeater {

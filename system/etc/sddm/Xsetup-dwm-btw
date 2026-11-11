@@ -1,0 +1,4 @@
+#!/bin/sh
+# SDDM X setup (dwm-btw): run the default script, then the keyboard layout for the login screen
+[ -x /usr/share/sddm/scripts/Xsetup ] && /usr/share/sddm/scripts/Xsetup
+setxkbmap -layout fr,ir
