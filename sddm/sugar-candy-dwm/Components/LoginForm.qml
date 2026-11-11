@@ -39,7 +39,7 @@ ColumnLayout {
     Clock {
         id: clock
         Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
-        Layout.preferredHeight: root.height / 2.3   // dwm-btw: room for avatar + greeting
+        Layout.preferredHeight: root.height / 3.2   // dwm-btw: avatar + greeting (keep room for the power buttons)
         Layout.leftMargin: p != "0" ? a == "left" ? -p : a == "right" ? p : 0 : 0
     }
 
@@ -54,8 +54,8 @@ ColumnLayout {
     SystemButtons {
         id: systemButtons
         Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
-        Layout.preferredHeight: root.height / 4
-        Layout.maximumHeight: root.height / 4
+        Layout.preferredHeight: root.height / 6    // dwm-btw: was /4, overlapped Login + session
+        Layout.maximumHeight: root.height / 6
         Layout.leftMargin: p != "0" ? a == "left" ? -p : a == "right" ? p : 0 : 0
         exposedSession: input.exposeSession
     }

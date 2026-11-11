@@ -31,7 +31,7 @@ import Qt5Compat.GraphicalEffects
 
 Column {
     id: clock
-    spacing: root.font.pointSize * 0.6
+    spacing: root.font.pointSize * 0.4
     width: parent.width / 2
 
     // ---- the user shown (last logged-in user): name and picture from SDDM's user model
@@ -67,7 +67,7 @@ Column {
     // ---- profile picture
     Item {
         visible: config.ShowAvatar !== "false"
-        width: root.font.pointSize * 7
+        width: root.font.pointSize * 5.5
         height: width
         anchors.horizontalCenter: parent.horizontalCenter
 
