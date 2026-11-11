@@ -20,6 +20,7 @@
 .config/xsettingsd/xsettingsd.conf
 .config/flameshot/flameshot.ini
 .config/fastfetch/config.jsonc
+.config/autorandr/postswitch
 .config/quickshell/arch-sidebar
 .config/systemd/user/picom.service
 .config/systemd/user/clipmenud.service.d/override.conf

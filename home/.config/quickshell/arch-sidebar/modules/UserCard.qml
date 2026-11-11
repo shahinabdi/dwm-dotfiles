@@ -12,6 +12,7 @@ Item {
     height: 84
 
     signal requestClose()
+    signal openSettings()
 
     property string userName: ""
     property string facePath: ""
@@ -204,7 +205,7 @@ Item {
 
         Column {
             anchors.verticalCenter: parent.verticalCenter
-            width: parent.width - 72
+            width: parent.width - 72 - 44
             spacing: 3
 
             Text {
@@ -241,6 +242,34 @@ Item {
                 font.pixelSize: 10
                 elide: Text.ElideRight
             }
+        }
+    }
+
+    // gear: open the Settings page
+    Rectangle {
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        width: 36
+        height: 36
+        radius: 10
+        color: gm.containsMouse ? "#2f3549" : "#24283b"
+        border.width: 1
+        border.color: gm.containsMouse ? "#7aa2f7" : "#414868"
+        Text {
+            anchors.centerIn: parent
+            text: String.fromCodePoint(0xF0493)
+            font.family: "JetBrainsMono Nerd Font Mono"
+            font.pixelSize: 18
+            color: gm.containsMouse ? "#7aa2f7" : "#a9b1d6"
+            rotation: gm.containsMouse ? 45 : 0
+            Behavior on rotation { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+        }
+        MouseArea {
+            id: gm
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.openSettings()
         }
     }
 }

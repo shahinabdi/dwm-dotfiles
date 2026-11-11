@@ -10,6 +10,8 @@ ShellRoot {
 
     // Sidebar starts hidden and opens with SUPER + A.
     property bool sidebarVisible: false
+    property bool settingsOpen: false          // gear next to the profile
+    onSidebarVisibleChanged: if (!sidebarVisible) settingsOpen = false
 
     // dwm bar height (changes with "Bar size"); the panel sits 12px below it
     property int barHeight: 28
@@ -26,6 +28,43 @@ ShellRoot {
     }
     Timer { interval: 3000; running: true; repeat: true; onTriggered: barProcess.running = true }
 
+    // dwm gaps (from _DWM_STATE): the panel follows the outer gap when margin = "gaps" (-1)
+    property bool gapsOn: true
+    property int gapOuter: 10
+    Process {
+        id: gapProcess
+        running: true
+        command: ["dwm-layout", "status"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const on = this.text.match(/ gaps=(\d)/), o = this.text.match(/gapouter=(\d+)/)
+                if (on) root.gapsOn = on[1] === "1"
+                if (o) root.gapOuter = Number(o[1])
+            }
+        }
+    }
+    Timer { interval: 1500; running: true; repeat: true; onTriggered: gapProcess.running = true }
+    readonly property int edgeMargin: settings.margin < 0 ? (root.gapsOn ? root.gapOuter : 0) : settings.margin
+
+    // sidebar settings (side, overlay / push, width, margin) — saved in settings.json,
+    // changed from the "Sidebar" card; editing the file by hand reloads it live
+    FileView {
+        id: settingsFile
+        path: Quickshell.env("HOME") + "/.config/quickshell/arch-sidebar/settings.json"
+        watchChanges: true
+        onFileChanged: reload()
+        onAdapterUpdated: writeAdapter()
+        onLoadFailed: err => { if (err === FileViewError.FileNotFound) writeAdapter() }
+
+        JsonAdapter {
+            id: settings
+            property string side: "right"     // right | left
+            property string mode: "overlay"   // overlay: float above windows · push: windows make room
+            property int width: 360
+            property int margin: -1         // -1 = follow dwm's outer gap (0 when gaps are off)
+        }
+    }
+
     // =========================================
     // QUICK SETTINGS SIDEBAR
     // =========================================
@@ -36,18 +75,23 @@ ShellRoot {
         visible: root.sidebarVisible
 
         anchors {
-            right: true
+            left: settings.side === "left"
+            right: settings.side !== "left"
             top: true
             bottom: true
         }
 
         margins {
-            right: 12
-            top: root.barHeight + 12
-            bottom: 12
+            left: settings.side === "left" ? root.edgeMargin : 0
+            right: settings.side !== "left" ? root.edgeMargin : 0
+            top: root.barHeight + root.edgeMargin
+            bottom: root.edgeMargin
         }
 
-        implicitWidth: 360
+        implicitWidth: Math.max(300, Math.min(520, settings.width))
+
+        // push: dwm keeps tiled windows out of the panel's space (via the strut); overlay: float above
+        exclusionMode: settings.mode === "push" ? ExclusionMode.Auto : ExclusionMode.Ignore
 
         // Square, opaque outer frame: no rounded corners showing the window behind them
         // (picom draws a shadow around the window rectangle). Cards inside stay rounded.
@@ -114,6 +158,7 @@ ShellRoot {
                     UserCard {
                         width: parent.width
                         onRequestClose: root.sidebarVisible = false
+                        onOpenSettings: root.settingsOpen = true
                     }
 
                     Rectangle {
@@ -176,16 +221,6 @@ ShellRoot {
                         width: parent.width
                     }
 
-                    // =================================
-                    // DWM (restart / rebuild / edit)
-                    // =================================
-
-                    SectionTitle { text: "DWM" }
-
-                    DwmCard {
-                        width: parent.width
-                        onRequestClose: root.sidebarVisible = false
-                    }
 
                     // =================================
                     // SCREENSHOT
@@ -198,6 +233,22 @@ ShellRoot {
                         onRequestClose: root.sidebarVisible = false
                     }
                 }
+            }
+
+            // Settings page: slides in over the quick settings (from the side the panel is on)
+            SettingsPage {
+                width: parent.width - 2
+                height: parent.height - 2
+                y: 1
+                x: root.settingsOpen ? 1 : (settings.side === "left" ? -width : width)
+                opacity: root.settingsOpen ? 1 : 0
+                visible: opacity > 0
+                z: 10
+                settings: settings
+                onBack: root.settingsOpen = false
+                onRequestClose: root.sidebarVisible = false
+                Behavior on x { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: 200 } }
             }
         }
     }

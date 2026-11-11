@@ -178,6 +178,10 @@ setup_system() {
 	step "System settings (sudo)"
 	run sudo install -Dm644 "$REPO/system/etc/X11/xorg.conf.d/30-touchpad.conf" /etc/X11/xorg.conf.d/30-touchpad.conf
 	info "touchpad: tap-to-click, natural scrolling"
+	run sudo install -Dm644 "$REPO/system/etc/systemd/system/autorandr.service.d/override.conf" \
+		/etc/systemd/system/autorandr.service.d/override.conf
+	run sudo systemctl daemon-reload
+	info "monitors: plug in a screen -> saved layout, or extended side by side (autorandr)"
 	run sudo localectl set-x11-keymap fr,ir pc105 "" ""
 	info "keyboard: fr + ir (Mod+Space switches)"
 
