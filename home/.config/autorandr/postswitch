@@ -6,3 +6,5 @@ dwm-ctl refresh >/dev/null 2>&1                       # status bar
 n=$(xrandr --listactivemonitors 2>/dev/null | head -1 | awk '{print $2}')
 notify-send -t 3000 -h string:x-dunst-stack-tag:dwm-monitor "Monitors" \
 	"${AUTORANDR_CURRENT_PROFILE:-layout} · ${n:-?} screen(s)" 2>/dev/null
+# sidebar: recompute its position for the new screen layout (closes it if open)
+( sleep 1; qs -c arch-sidebar ipc call sidebar relayout >/dev/null 2>&1 ) &

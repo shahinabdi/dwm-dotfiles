@@ -269,5 +269,12 @@ ShellRoot {
         function close(): void {
             root.sidebarVisible = false
         }
+
+        // after a monitor change (plug in, arrangement, primary): rebuild the panel so its
+        // position is computed from the new screen layout (called by the autorandr hook / dwm-monitor)
+        function relayout(): void {
+            root.sidebarVisible = false
+            Quickshell.reload(true)
+        }
     }
 }

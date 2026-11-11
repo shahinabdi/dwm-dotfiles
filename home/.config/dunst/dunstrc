@@ -1,5 +1,5 @@
 [global]
-    font = JetBrainsMono Nerd Font 13
+    font = UbuntuSans Nerd Font 13
     origin = top-right
     offset = (12, 47)
     width = 300
