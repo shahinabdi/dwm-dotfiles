@@ -162,6 +162,16 @@ ShellRoot {
                     }
 
                     // =================================
+                    // WINDOWS (dwm layouts)
+                    // =================================
+
+                    SectionTitle { text: "WINDOWS" }
+
+                    LayoutsCard {
+                        width: parent.width
+                    }
+
+                    // =================================
                     // DWM (restart / rebuild / edit)
                     // =================================
 
