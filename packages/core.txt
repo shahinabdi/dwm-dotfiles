@@ -1,6 +1,6 @@
 # X11 + build
 xorg-server xorg-xinit xorg-xrandr xorg-xsetroot xorg-xprop xorg-xrdb xorg-xwininfo xorg-xset
-base-devel git libx11 libxft libxinerama fontconfig freetype2
+base-devel git libx11 libxft libxinerama fontconfig freetype2 fribidi
 # desktop
 kitty rofi picom dunst libnotify feh xdg-utils perl xsettingsd quickshell fastfetch
 # audio (PipeWire + noise-cancelling mic)
