@@ -1,0 +1,139 @@
+# Changelog
+
+All notable changes to **dwm-btw**, the desktop made of two repositories released together:
+[`dwm`](https://github.com/shahinabdi/dwm) (the window manager and its helper scripts) and
+[`dwm-dotfiles`](https://github.com/shahinabdi/dwm-dotfiles) (configs, sidebar, installer).
+Both repos carry the same version tags.
+
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
+[Semantic Versioning](https://semver.org/) (0.x: still moving fast, things may change between versions).
+
+Update an existing install: `git pull` in both repos, then `./install.sh` (or Settings → DWM → Rebuild).
+
+---
+
+## [0.6.0] — 2026-11-13 · Workspace editor
+
+### Added
+- **Workspaces page** (`Super + A` → ⚙ → Workspaces): change each workspace's icon and which apps open on
+  it without touching code.
+  - Icon: type text, pick one of 32 built-in icons, or paste any icon from the
+    [Nerd Fonts cheat sheet](https://www.nerdfonts.com/cheat-sheet) (linked on the page).
+  - Apps: add / edit / remove; pick the app from the open windows or by clicking its window;
+    optional "title contains"; workspace 1–10 or *any*; jump there or open quietly; floating.
+  - **Apply** restarts dwm in place (windows stay); **Reset to defaults**.
+  - Tips on the page: several apps on one workspace (kitty, vim, htop…), terminal programs with their own
+    class (`kitty --class htop -e htop`), exact matches (`=obs`).
+- dwm reads `~/.config/dwm-btw/workspaces.conf` at start / in-place restart. Without it, the built-in
+  `tags.h` / `rules.h` are used exactly as before.
+- `dwm-workspaces` command: `get`, `save`, `icon`, `add`, `rm`, `windows`, `pick`, `apply`, `reset`.
+
+### Changed
+- The page warns when the running dwm is older than this feature and offers **Rebuild dwm now** (once).
+
+### Upgrade note
+- Rebuild dwm once (Settings → DWM → Rebuild, or the button on the Workspaces page).
+
+---
+
+## [0.5.0] — 2026-11-13 · Notifications, Bluetooth, microphone
+
+### Added
+- **Saved notifications**: every notification is kept until you delete it, even after a reboot
+  (`dwm-notif`, stored in `~/.local/share/dwm-btw/notifications.jsonl`). Quick feedback pop-ups
+  (volume, brightness, layouts, wallpaper…) are not saved.
+- **Notifications card** at the top of the sidebar: the 3 newest, "N new" badge, delete one, **Clear all**
+  (asks once), **See all**.
+- **Notifications page**: grouped by day, search, filter by app or unread, click to read the whole text,
+  delete the filtered ones.
+- **Silent mode**: no pop-ups, everything still saved; critical alerts (battery low) still show; stays on
+  after a reboot.
+- **Cat icon 󰄛 on the bar** with the unread count (bell-off when silent). Left click: Notifications page ·
+  middle: clear all · right: silent on/off. Can be hidden in Settings → Bar items.
+- **Bluetooth card** that works: on/off, connected devices with battery, *Devices* list (connect /
+  disconnect / forget), ↻ search for nearby devices and **Pair** (pair + trust + connect). `dwm-bt` helper.
+- **Microphone** volume in the Audio card, next to the output: slider (drag or scroll), mute, device name.
+
+### Changed
+- New notification pop-up style: rounded cards with icons, colour by urgency, stacking, max 5 on screen,
+  click actions (left: open, middle: close all, right: close).
+- Rofi cheat sheet (`Super + Shift + H`) and layout menu: the highlighted row is readable.
+
+### Fixed
+- Bluetooth pairing was impossible (adapter not pairable, the card was only an on/off switch).
+
+### Notes
+- Keyboards that ask for a PIN still pair with `bluetoothctl` in a terminal.
+- New package: `python` (for `dwm-notif` / `dwm-workspaces`).
+
+---
+
+## [0.4.0] — 2026-11-11 · Keyboard profiles, fonts, Persian titles
+
+### Added
+- **QWERTY keyboard profile** next to AZERTY (still the default): `./install.sh --keyboard qwerty`
+  (`--layouts us,ir`…), `dwm-keyboard set qwerty|azerty`, or Settings → DWM → Keyboard.
+  Only the workspace and screen keys change; the cheat sheet follows your profile.
+- Font picker lists **all installed fonts** for the interface, with search; terminal and bar lists offer
+  monospace fonts only.
+- Interface font **Vazirmatn** (Latin + Persian) for GTK, Qt, rofi and notifications.
+- Sidebar re-lays itself out after every monitor change (`relayout` IPC, called by autorandr / dwm-monitor).
+
+### Fixed
+- **Persian / Arabic window titles** in the bar are shown right-to-left with joined letters (FriBiDi).
+- The sidebar overlapped the first screen with two monitors and did not line up with the window gaps.
+
+---
+
+## [0.3.0] — 2026-11-11 · Monitors, fonts, login and lock screen
+
+### Added
+- **Multi-monitor**: each screen has its own 10 workspaces; arrangement map, per-screen on/off,
+  resolution, position, primary, saved layouts, automatic switching on plug / unplug (autorandr).
+- **Settings page** in the sidebar (⚙): bar items on/off, sidebar side / overlay or push / width / margin,
+  screen & bar size, fonts, monitors, dwm tools.
+- **Nerd Fonts library**: browse ~70 fonts from nerdfonts.com, install / remove in one click; separate
+  interface, terminal and bar fonts.
+- **Lock screen** (`dwm-lock`): blurred wallpaper, profile picture, name; notifications paused while locked.
+- **Login screen**: SDDM Sugar Candy ported to Qt6, Tokyo Night, greeting with your name and picture,
+  keyboard-layout chip.
+- fastfetch layout that fits the terminal.
+
+### Changed
+- Panels (the sidebar) are sticky on every workspace and can reserve space (push mode).
+
+---
+
+## [0.2.0] — 2026-11-11 · Sidebar, layouts, gaps, wallpapers, installer
+
+### Added
+- **dwm-dotfiles**: one-script installer (`install.sh`, `--dry-run`, `--no-apps`…), configs, `sync.sh`.
+- **Quickshell sidebar** (`Super + A`): profile, Wi-Fi, Bluetooth, audio, display, wallpaper, windows,
+  screenshot, power.
+- **Restart dwm in place** (`Super + Ctrl + Shift + Q`): windows keep their workspaces.
+- **App rules**: every app on its own workspace with icons (kitty, Brave, VS Code, Thunar, Mail, Obsidian,
+  VLC, OBS); the view jumps to the app.
+- **9 layouts**: tile, monocle, floating + bottom stack, centered master, grid, deck, spiral, dwindle;
+  layout menu with descriptions (`Super + Shift + L`).
+- **Gaps** (inner, outer, smart) for every layout.
+- **Wallpaper manager**: thumbnails, next / previous / random, fit mode, slideshow.
+- Colour picker (`Super + Shift + C`), profile picture and display name, bar size without rebuild.
+- **Tokyo Night everywhere**: bar, GTK 3/4, Qt, kitty, rofi, dunst.
+
+---
+
+## [0.1.0] — 2026-11-10 · First version
+
+### Added
+- dwm 6.8 with clickable status bar (keyboard layout, network, volume, microphone, brightness, battery,
+  date), media keys, picom (VSync).
+- Helper scripts: clipboard history (`dwm-clip`), screenshots (`dwm-shot`), cheat sheet (`dwm-help`),
+  controls (`dwm-ctl`), status bar (`dwm-status`).
+- French AZERTY ⇄ Persian keyboard layouts.
+
+[0.6.0]: https://github.com/shahinabdi/dwm-dotfiles/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/shahinabdi/dwm-dotfiles/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/shahinabdi/dwm-dotfiles/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/shahinabdi/dwm-dotfiles/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/shahinabdi/dwm-dotfiles/releases/tag/v0.2.0
+[0.1.0]: https://github.com/shahinabdi/dwm/releases/tag/v0.1.0

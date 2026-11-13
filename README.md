@@ -58,6 +58,9 @@ What it does:
 5. creates the RNNoise noise-cancelling mic for this machine's microphone and makes it the default
    (needs PipeWire running — if you install from a TTY, run `./install.sh --configs` again after `startx`)
 
+
+**What's new:** see [CHANGELOG.md](CHANGELOG.md) (current version: **0.6.0**).
+
 ## Keeping the repo up to date
 
 After changing configs on your machine:
