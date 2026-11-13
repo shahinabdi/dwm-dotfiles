@@ -13,6 +13,29 @@ Update an existing install: sidebar → ⚙ Settings → **Updates**, or `lunari
 
 ---
 
+## [0.8.0] — 2026-11-13 · Default terminal, safe log out
+
+### Added
+- **Default terminal** (sidebar → ⚙ Settings → **Terminal**): pick one of the installed terminals (kitty by default;
+  alacritty, ghostty, wezterm, st, xterm, urxvt, Xfce Terminal, Konsole, GNOME Terminal appear when installed).
+  It is used everywhere: Mod+Return, terminal apps started from the launcher (htop, vim…), `$TERMINAL`, Thunar's
+  *Open Terminal Here* and Lunaris's own windows (rebuild, update, nmtui). The workspace rule moves with it.
+  `dwm-term` (`get`, `list`, `set <name>`) in a terminal.
+- **Log out asks first**: Mod+Shift+Q (quit dwm) opens a small *Cancel / Log out* dialog — Cancel is selected,
+  Escape cancels — so a stray key press no longer closes every app.
+
+### Fixed
+- Terminal apps from the launcher (htop, vim…) opened in **st** instead of kitty (rofi had no terminal set and
+  picked the first one it found).
+- Screenshot notification **Show in folder** opened the folder in a terminal: it now opens **Thunar** on the
+  Screenshots folder, and folders open in Thunar by default (kitty had registered itself for folders).
+
+### Upgrade note
+- dwm is rebuilt by the update (new Mod+Return / Mod+Shift+Q bindings). Log out and in once (or restart dwm in
+  place) so `$TERMINAL` is set for apps started from the session.
+
+---
+
 ## [0.7.0] — 2026-11-13 · Updates, Lunaris name
 
 ### Added
@@ -158,6 +181,7 @@ Update an existing install: sidebar → ⚙ Settings → **Updates**, or `lunari
   controls (`dwm-ctl`), status bar (`dwm-status`).
 - French AZERTY ⇄ Persian keyboard layouts.
 
+[0.8.0]: https://github.com/shahinabdi/lunaris/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/shahinabdi/lunaris/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/shahinabdi/lunaris/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/shahinabdi/lunaris/compare/v0.4.0...v0.5.0

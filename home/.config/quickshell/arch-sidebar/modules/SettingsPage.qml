@@ -287,6 +287,13 @@ Rectangle {
             }
 
             // ---- fonts
+            // ---- default terminal (dwm-term)
+            SectionTitle { text: "TERMINAL" }
+
+            TerminalCard {
+                width: parent.width
+            }
+
             SectionTitle { text: "FONTS" }
 
             FontsCard {

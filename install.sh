@@ -141,7 +141,15 @@ deploy_configs() {
 	done
 	(( DRY )) || systemctl --user daemon-reload 2>/dev/null || true
 	# updates: where this repo is (lunaris-update), and the weekly check (every Tuesday)
-	(( DRY )) || printf 'LUNARIS_DIR=%q\n' "$REPO" > "$HOME/.config/lunaris.conf"
+	if (( ! DRY )); then   # keep other keys (TERMINAL=…) of lunaris.conf
+		touch "$HOME/.config/lunaris.conf"
+		sed -i '/^LUNARIS_DIR=/d' "$HOME/.config/lunaris.conf"
+		printf 'LUNARIS_DIR=%q\n' "$REPO" >> "$HOME/.config/lunaris.conf"
+	fi
+	# folders open in Thunar (kitty registers itself for folders too), terminal apps use the default terminal
+	run xdg-mime default thunar.desktop inode/directory 2>/dev/null || true
+	command -v dwm-term >/dev/null && run dwm-term setup
+	info "default terminal: kitty (sidebar → ⚙ Settings → Terminal to change it)"
 	run systemctl --user enable --now lunaris-update.timer 2>/dev/null || warn "could not enable the weekly update check (lunaris-update timer on)"
 	info "updates: checked every Tuesday; Settings → Updates in the sidebar, or lunaris-update"
 }

@@ -61,7 +61,12 @@ What it does:
    (needs PipeWire running — if you install from a TTY, run `./install.sh --configs` again after `startx`)
 
 
-**What's new:** see [CHANGELOG.md](CHANGELOG.md) (current version: **0.7.0**).
+**What's new:** see [CHANGELOG.md](CHANGELOG.md) (current version: **0.8.0**).
+
+## Default terminal
+kitty by default. Sidebar → ⚙ **Settings → Terminal** lists the terminals you have installed; the one you pick is
+used by Mod+Return, terminal apps from the launcher (htop, vim…), `$TERMINAL`, Thunar's *Open Terminal Here* and
+Lunaris's own windows. In a terminal: `dwm-term list`, `dwm-term set alacritty`.
 
 ## Updates
 Lunaris checks for updates every Tuesday and notifies you; or open the sidebar → ⚙ **Settings → Updates** →

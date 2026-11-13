@@ -1,4 +1,5 @@
 configuration {
+    terminal:            "dwm-term";
     modi:                "drun,run,window";
     show-icons:          false;   /* icons only in the app launcher (dwm passes -show-icons) */
     icon-theme:          "Papirus-Dark";

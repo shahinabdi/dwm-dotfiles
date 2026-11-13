@@ -1,4 +1,6 @@
 export QT_QPA_PLATFORMTHEME=qt5ct
+# default terminal for apps that honour $TERMINAL: dwm-term opens the one chosen in Settings → Terminal
+export TERMINAL=dwm-term
 xrdb -merge "$HOME/.Xresources"
 xsettingsd &   # live GTK settings (theme, font size)
 xsetroot -cursor_name left_ptr
@@ -10,7 +12,7 @@ xsetroot -cursor_name left_ptr
 xset r rate 250 40
 
 # let user services (pipewire, etc.) see the X display
-systemctl --user import-environment DISPLAY XAUTHORITY
+systemctl --user import-environment DISPLAY XAUTHORITY TERMINAL
 systemctl --user restart clipmenud   # clipboard history (Mod+v)
 systemctl --user reset-failed picom 2>/dev/null; systemctl --user restart picom   # compositor (auto-restarts, logs: journalctl --user -u picom)
 
