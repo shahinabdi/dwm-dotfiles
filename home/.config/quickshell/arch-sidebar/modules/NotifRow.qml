@@ -1,9 +1,10 @@
 import QtQuick
 
-// One saved notification in the Notifications card (modelData from `dwm-notif list`).
+// One saved notification (modelData from `dwm-notif list`); click to show the whole text.
 Rectangle {
     id: row
-    property var card
+    property var store
+    property bool expanded: false
     width: parent ? parent.width : 280
     height: body.implicitHeight + 20
     radius: 10
@@ -12,6 +13,7 @@ Rectangle {
     border.color: modelData.urgency === "critical" ? "#f7768e" : (modelData.unread ? "#3b4261" : "#2a2e42")
 
     HoverHandler { id: hover }
+    TapHandler { onTapped: row.expanded = !row.expanded }
 
     // unread dot
     Rectangle {
@@ -41,7 +43,7 @@ Rectangle {
             color: "#24283b"
             Text {
                 anchors.centerIn: parent
-                text: String.fromCodePoint(row.card.glyph(modelData))
+                text: String.fromCodePoint(row.store.glyph(modelData))
                 color: modelData.urgency === "critical" ? "#f7768e" : "#7aa2f7"
                 font.pixelSize: 18
             }
@@ -56,7 +58,7 @@ Rectangle {
         spacing: 2
         Text {
             width: parent.width
-            text: (modelData.app ? modelData.app + "  ·  " : "") + row.card.ago(modelData.time)
+            text: (modelData.app ? modelData.app + "  ·  " : "") + row.store.ago(modelData.time)
             color: "#565f89"; font.pixelSize: 9
             elide: Text.ElideRight
         }
@@ -73,7 +75,7 @@ Rectangle {
             text: modelData.body
             color: "#a9b1d6"; font.pixelSize: 11
             wrapMode: Text.Wrap
-            maximumLineCount: 3
+            maximumLineCount: row.expanded ? 1000 : 3
             elide: Text.ElideRight
             textFormat: Text.PlainText
         }
@@ -92,7 +94,7 @@ Rectangle {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: row.card.remove(modelData.id)
+            onClicked: row.store.remove(modelData.id)
         }
     }
 }

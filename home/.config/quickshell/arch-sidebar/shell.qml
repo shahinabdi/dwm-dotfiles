@@ -11,8 +11,12 @@ ShellRoot {
     // Sidebar starts hidden and opens with SUPER + A.
     property bool sidebarVisible: false
     property bool settingsOpen: false          // gear next to the profile
+    property bool notifOpen: false             // "See all" in Notifications / the cat on the bar
     // closing the sidebar: notifications seen (unread dots / bar count reset)
-    onSidebarVisibleChanged: if (!sidebarVisible) { settingsOpen = false; Quickshell.execDetached(["dwm-notif", "seen"]) }
+    onSidebarVisibleChanged: if (!sidebarVisible) { settingsOpen = false; notifOpen = false; Quickshell.execDetached(["dwm-notif", "seen"]) }
+
+    // saved notifications (dwm-notif), shared by the card and the page
+    NotifStore { id: notifs }
 
     // dwm bar height (changes with "Bar size"); the panel sits 12px below it
     property int barHeight: 28
@@ -177,6 +181,8 @@ ShellRoot {
 
                     NotificationsCard {
                         width: parent.width
+                        store: notifs
+                        onOpenPage: root.notifOpen = true
                     }
 
                     // =================================
@@ -242,6 +248,21 @@ ShellRoot {
                 }
             }
 
+            // Notifications page: slides in like Settings
+            NotificationsPage {
+                width: parent.width - 2
+                height: parent.height - 2
+                y: 1
+                x: root.notifOpen ? 1 : (settings.side === "left" ? -width : width)
+                opacity: root.notifOpen ? 1 : 0
+                visible: opacity > 0
+                z: 9
+                store: notifs
+                onBack: root.notifOpen = false
+                Behavior on x { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: 200 } }
+            }
+
             // Settings page: slides in over the quick settings (from the side the panel is on)
             SettingsPage {
                 width: parent.width - 2
@@ -272,6 +293,13 @@ ShellRoot {
         }
 
         function open(): void {
+            root.sidebarVisible = true
+        }
+
+        // open straight on the Notifications page (the cat on the bar)
+        function notifications(): void {
+            root.settingsOpen = false
+            root.notifOpen = true
             root.sidebarVisible = true
         }
 
