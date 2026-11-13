@@ -11,7 +11,8 @@ ShellRoot {
     // Sidebar starts hidden and opens with SUPER + A.
     property bool sidebarVisible: false
     property bool settingsOpen: false          // gear next to the profile
-    onSidebarVisibleChanged: if (!sidebarVisible) settingsOpen = false
+    // closing the sidebar: notifications seen (unread dots / bar count reset)
+    onSidebarVisibleChanged: if (!sidebarVisible) { settingsOpen = false; Quickshell.execDetached(["dwm-notif", "seen"]) }
 
     // dwm bar height (changes with "Bar size"); the panel sits 12px below it
     property int barHeight: 28
@@ -168,6 +169,14 @@ ShellRoot {
                         width: parent.width
                         height: 1
                         color: "#414868"
+                    }
+
+                    // =================================
+                    // NOTIFICATIONS (saved until deleted — dwm-notif)
+                    // =================================
+
+                    NotificationsCard {
+                        width: parent.width
                     }
 
                     // =================================

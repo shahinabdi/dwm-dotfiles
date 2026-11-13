@@ -78,7 +78,7 @@ Add a new config by listing its path in `manifest.txt` and running `./sync.sh`.
 | `home/.config/quickshell/arch-sidebar` | sidebar (Mod+a): user/distro, Wi-Fi, Bluetooth, audio, brightness, scale/font/resolution, dwm tools, screenshots, power |
 | `home/.config/rofi` | `tokyo-dwm` theme used by all menus (apps, clipboard, Wi-Fi, power, display, help) |
 | `home/.config/picom`, `systemd/user/picom.service` | compositor, auto-restarted, logs in `journalctl --user -u picom` |
-| `home/.config/dunst` | notifications |
+| `home/.config/dunst` | notifications (pop-up style; saved by `dwm-notif` for the sidebar list) |
 | `home/.config/kitty` | terminal |
 | `home/.config/fastfetch` | system info in boxed sections (Hardware / Software / Uptime), Tokyo Night colours: run `fastfetch` |
 | `home/.config/gtk-3.0`, `gtk-4.0`, `.gtkrc-2.0`, `qt5ct`, `qt6ct`, `xsettingsd` | dark Adwaita, Papirus-Dark icons, JetBrains Mono, live GTK font changes |
@@ -102,7 +102,7 @@ Rules and icons are in `rules.h` / `tags.h` in the dwm repo.
 |---|---|
 | Mod+Shift+h | cheat sheet with every binding |
 | Mod+Return / Mod+d | terminal / app launcher |
-| Mod+a | quick-settings sidebar |
+| Mod+a | quick-settings sidebar (notifications: saved until deleted, clear all, silent) |
 | Mod+j / Mod+k (or l / h) | focus next / previous window |
 | Mod+z | make the focused window the master (again: swap back) |
 | Mod+Left / Mod+Right, Mod+i / Mod+u | master area narrower / wider, more / fewer master windows |

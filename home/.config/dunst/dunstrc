@@ -1,34 +1,85 @@
+# dunst — notifications for dwm-btw (Tokyo Night, matches the bar, rofi and the sidebar)
+# Notifications are also saved (until you delete them) by dwm-notif: Super+A → Notifications,
+# or the cat on the bar (left: open, middle: clear all, right: silent on/off).
+# dwm-font / dwm-display edit the "font =" and "offset =" lines: keep them on one line.
+
 [global]
     font = Vazirmatn 13
     origin = top-right
     offset = (12, 47)
-    width = 300
+    width = (280, 380)
+    height = (0, 220)
+    notification_limit = 5
+    gap_size = 8
+    indicate_hidden = yes
+    stack_duplicates = true
+    show_age_threshold = 60
+
     frame_width = 1
-    frame_color = "#7aa2f7"
+    frame_color = "#414868"
     separator_color = frame
-    corner_radius = 6
-    padding = 10
-    horizontal_padding = 12
+    corner_radius = 12
+    padding = 12
+    horizontal_padding = 14
+    text_icon_padding = 14
+
+    icon_position = left
+    min_icon_size = 32
+    max_icon_size = 56
+    icon_corner_radius = 8
+    icon_theme = "Papirus-Dark"
+    enable_recursive_icon_lookup = true
+
     progress_bar = true
-    progress_bar_height = 8
+    progress_bar_height = 6
     progress_bar_frame_width = 0
+    progress_bar_corner_radius = 3
+    progress_bar_min_width = 150
+    progress_bar_max_width = 340
     highlight = "#7aa2f7"
+
     markup = full
-    format = "<b>%s</b>\n%b"
+    format = "<b>%s</b>\n<span foreground='#a9b1d6'>%b</span>"
+    alignment = left
+    vertical_alignment = center
+    ellipsize = end
+    ignore_newline = no
+
+    history_length = 50
+    sticky_history = yes
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = close_all
+    mouse_right_click = close_current
 
 [urgency_low]
     background = "#1a1b26"
     foreground = "#a9b1d6"
-    timeout = 3
+    frame_color = "#2f3549"
+    highlight = "#565f89"
+    timeout = 4
 
 [urgency_normal]
     background = "#1f2335"
     foreground = "#c0caf5"
-    timeout = 5
+    frame_color = "#3b4261"
+    highlight = "#7aa2f7"
+    timeout = 6
 
 [urgency_critical]
-    background = "#1f2335"
+    background = "#2a1f2b"
     foreground = "#c0caf5"
-    frame_color = "#e0af68"
-    highlight = "#e0af68"
+    frame_color = "#f7768e"
+    highlight = "#f7768e"
     timeout = 0
+
+# save every notification for the sidebar list (see dwm-notif)
+[dwm_save]
+    appname = "*"
+    script = ~/.local/bin/dwm-notif
+
+# volume / brightness pop-ups: compact, no icon
+[dwm_osd]
+    stack_tag = "dwm-osd"
+    format = "<b>%s</b>"
+    min_icon_size = 0
+    max_icon_size = 0
