@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — set up the dwm-btw desktop on Arch Linux.
+# install.sh — set up the Lunaris desktop on Arch Linux.
 #
 #   ./install.sh               everything: packages, apps, configs, dwm, services
 #   ./install.sh --dry-run     show what would happen, change nothing
@@ -13,15 +13,18 @@
 #                              (default: azerty — Mod + & é " ' ( - è _ ç à, Mod + ; / ,)
 #   ./install.sh --layouts us,ir     keyboard layouts, Mod+Space cycles (default fr,ir / us,ir with qwerty)
 #
-# Env: DWM_DIR (default ~/dwm-btw)   DWM_REPO (default https://github.com/shahinabdi/dwm.git)
+# Env: DWM_DIR (default: the folder saved in ~/.config/dwm-dev.conf, else ~/lunaris-dwm)
+#      DWM_REPO (default https://github.com/shahinabdi/lunaris-dwm.git)
 #
 # Existing files that differ are backed up as <file>.bak-<timestamp> before being replaced.
 
 set -euo pipefail
 
 REPO=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-DWM_DIR=${DWM_DIR:-$HOME/dwm-btw}
-DWM_REPO=${DWM_REPO:-https://github.com/shahinabdi/dwm.git}
+# existing installs keep their dwm folder (saved by a previous run), new ones use ~/lunaris-dwm
+[ -n "${DWM_DIR:-}" ] || DWM_DIR=$(sed -n 's/^DWM_DIR=//p' "$HOME/.config/dwm-dev.conf" 2>/dev/null | tr -d "\"'")
+DWM_DIR=${DWM_DIR:-$HOME/lunaris-dwm}
+DWM_REPO=${DWM_REPO:-https://github.com/shahinabdi/lunaris-dwm.git}
 STAMP=$(date +%Y%m%d-%H%M%S)
 
 DRY=0 LINK=0 APPS=1 AUR=1 ONLY_CONFIGS=0 SDDM=1 KEYBOARD="" LAYOUTS=""
@@ -137,6 +140,10 @@ deploy_configs() {
 		[ -e "$HOME/Pictures/Wallpapers/$(basename "$f")" ] || run cp "$f" "$HOME/Pictures/Wallpapers/"
 	done
 	(( DRY )) || systemctl --user daemon-reload 2>/dev/null || true
+	# updates: where this repo is (lunaris-update), and the weekly check (every Tuesday)
+	(( DRY )) || printf 'LUNARIS_DIR=%q\n' "$REPO" > "$HOME/.config/lunaris.conf"
+	run systemctl --user enable --now lunaris-update.timer 2>/dev/null || warn "could not enable the weekly update check (lunaris-update timer on)"
+	info "updates: checked every Tuesday; Settings → Updates in the sidebar, or lunaris-update"
 }
 
 # noise-cancelling mic: needs the name of this machine's microphone
@@ -245,14 +252,14 @@ save_keyboard() {
 	if (( KBD_GIVEN )) || [ ! -f "$KBD_CONF" ]; then
 		if (( DRY )); then info "[dry] write $KBD_CONF"
 		else mkdir -p "$(dirname "$KBD_CONF")"
-			printf '# dwm-btw keyboard profile (dwm-keyboard / install.sh --keyboard)\nKEYBOARD=%s\nLAYOUTS=%s\n' \
+			printf '# Lunaris keyboard profile (dwm-keyboard / install.sh --keyboard)\nKEYBOARD=%s\nLAYOUTS=%s\n' \
 				"$KEYBOARD" "$LAYOUTS" > "$KBD_CONF"; fi
 	fi
 	info "change later: dwm-keyboard set azerty|qwerty [layouts]"
 }
 
 # ---------------------------------------------------------------- main
-printf '%sdwm-dotfiles installer%s  (repo: %s)\n' "$c_blue" "$c_off" "$REPO"
+printf '%sLunaris installer%s  (repo: %s)\n' "$c_blue" "$c_off" "$REPO"
 (( DRY )) && warn "dry run — nothing will be changed"
 
 save_keyboard

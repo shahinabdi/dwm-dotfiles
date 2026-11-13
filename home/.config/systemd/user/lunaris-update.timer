@@ -1,0 +1,11 @@
+[Unit]
+Description=Lunaris: check for updates every Tuesday
+
+[Timer]
+# every Tuesday morning; missed while the computer was off -> runs at the next login
+OnCalendar=Tue *-*-* 10:00:00
+Persistent=true
+RandomizedDelaySec=20min
+
+[Install]
+WantedBy=timers.target

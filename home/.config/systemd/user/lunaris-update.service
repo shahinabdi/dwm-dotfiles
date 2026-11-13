@@ -1,0 +1,7 @@
+[Unit]
+Description=Lunaris: check for updates
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/lunaris-update check --notify

@@ -1,5 +1,5 @@
 #!/bin/sh
-# autorandr postswitch (dwm-btw): runs after every monitor change, also from the udev hotplug service
+# autorandr postswitch (Lunaris): runs after every monitor change, also from the udev hotplug service
 export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin"
 dwm-wall restore --no-slideshow >/dev/null 2>&1      # wallpaper on every screen
 dwm-ctl refresh >/dev/null 2>&1                       # status bar

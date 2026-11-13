@@ -1,4 +1,4 @@
-# dunst — notifications for dwm-btw (Tokyo Night, matches the bar, rofi and the sidebar)
+# dunst — notifications for Lunaris (Tokyo Night, matches the bar, rofi and the sidebar)
 # Notifications are also saved (until you delete them) by dwm-notif: Super+A → Notifications,
 # or the cat on the bar (left: open, middle: clear all, right: silent on/off).
 # dwm-font / dwm-display edit the "font =" and "offset =" lines: keep them on one line.

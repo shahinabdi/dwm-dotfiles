@@ -1,5 +1,5 @@
 #!/bin/sh
-# SDDM X setup (dwm-btw): run the default script, then the keyboard layout for the login screen
+# SDDM X setup (Lunaris): run the default script, then the keyboard layout for the login screen
 [ -x /usr/share/sddm/scripts/Xsetup ] && /usr/share/sddm/scripts/Xsetup
 # layouts written by install.sh (--keyboard / --layouts); default AZERTY fr,ir
 setxkbmap -layout fr,ir

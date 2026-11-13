@@ -1,18 +1,20 @@
-# dwm-dotfiles
+# Lunaris
 
-Arch Linux + [dwm](https://github.com/shahinabdi/dwm) (X11) desktop: Tokyo Night colours, a Quickshell
+**Website: <https://lunaris.shahinabdi.com>** · formerly *dwm-btw* / `dwm-dotfiles`
+
+Arch Linux + [dwm](https://github.com/shahinabdi/lunaris-dwm) (X11) desktop: Tokyo Night colours, a Quickshell
 quick-settings sidebar, rofi menus, PipeWire with a noise-cancelling mic, screenshots, clipboard history,
 whole-screen scaling and an in-place dwm restart.
 
 The dwm source and its helper scripts (`dwm-shot`, `dwm-clip`, `dwm-power`, `dwm-display`, `dwm-dev`,
-`dwm-help`, `dwm-status`, …) live in the **dwm** repo; this repo holds everything else and installs both.
+`dwm-help`, `dwm-status`, …) live in the **[lunaris-dwm](https://github.com/shahinabdi/lunaris-dwm)** repo; this repo holds everything else and installs both.
 
 ## Install
 
 ```sh
 sudo pacman -S --needed git
-git clone https://github.com/shahinabdi/dwm-dotfiles.git
-cd dwm-dotfiles
+git clone https://github.com/shahinabdi/lunaris.git
+cd lunaris
 ./install.sh --dry-run   # see what it would do
 ./install.sh                      # French AZERTY keyboard (default)
 ./install.sh --keyboard qwerty    # QWERTY keyboard (US / UK / most others)
@@ -44,7 +46,7 @@ Everything else is identical. The choice is saved in `~/.config/dwm-btw.conf`; s
 `dwm-keyboard set qwerty` (or `azerty`), or in the sidebar under **Settings → DWM → Keyboard**; either way
 dwm is rebuilt and restarted in place.
 
-`DWM_DIR` (default `~/dwm-btw`) and `DWM_REPO` choose where dwm is cloned from/to.
+`DWM_DIR` (default `~/lunaris-dwm`, or the folder a previous install used) and `DWM_REPO` choose where dwm is cloned from/to.
 
 What it does:
 
@@ -59,7 +61,14 @@ What it does:
    (needs PipeWire running — if you install from a TTY, run `./install.sh --configs` again after `startx`)
 
 
-**What's new:** see [CHANGELOG.md](CHANGELOG.md) (current version: **0.6.0**).
+**What's new:** see [CHANGELOG.md](CHANGELOG.md) (current version: **0.7.0**).
+
+## Updates
+Lunaris checks for updates every Tuesday and notifies you; or open the sidebar → ⚙ **Settings → Updates** →
+**Check now** / **Update**. In a terminal: `lunaris-update check`, `lunaris-update apply` (`--dry-run` to preview),
+`lunaris-update timer off` to stop the weekly check. Only configs that changed upstream are replaced (yours are
+backed up as `*.bak-<date>`), dwm is rebuilt only when its source changed, and local changes in the repos are never
+overwritten.
 
 ## Keeping the repo up to date
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# fastfetch wrapper (dwm-btw): picks a layout that fits the terminal
+# fastfetch wrapper (Lunaris): picks a layout that fits the terminal
 #   full     logo + boxed sections      (>= 100 columns and >= 34 rows)
 #   compact  boxed sections, no logo    (>= 56 columns and >= 34 rows)
 #   mini     one short line per item    (anything smaller, e.g. a split tile)

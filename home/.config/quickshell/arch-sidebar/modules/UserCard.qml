@@ -271,5 +271,23 @@ Item {
             cursorShape: Qt.PointingHandCursor
             onClicked: root.openSettings()
         }
+        // update available (lunaris-update): a dot on the gear
+        Rectangle {
+            visible: root.updateAvailable
+            anchors.right: parent.right; anchors.top: parent.top
+            anchors.margins: -3
+            width: 12; height: 12; radius: 6
+            color: "#e0af68"
+            border.width: 2; border.color: "#1a1b26"
+        }
     }
+
+    property bool updateAvailable: false
+    Process {
+        id: updP
+        running: true
+        command: ["lunaris-update", "status"]
+        stdout: StdioCollector { onStreamFinished: root.updateAvailable = /^available=1$/m.test(this.text) }
+    }
+    Timer { interval: 60000; running: true; repeat: true; onTriggered: updP.running = true }
 }

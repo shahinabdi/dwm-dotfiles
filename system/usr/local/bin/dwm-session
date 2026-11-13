@@ -1,7 +1,7 @@
 #!/bin/sh
-# dwm-btw session for display managers (SDDM): exactly what `startx` runs — ~/.xinitrc
+# Lunaris session for display managers (SDDM): exactly what `startx` runs — ~/.xinitrc
 # (keyboard, xrdb, xsettingsd, picom with vsync, clipboard, status bar, sidebar, wallpaper, dwm).
-# Login shells don't read ~/.bashrc, so put the dwm-btw scripts on PATH here.
+# Login shells don't read ~/.bashrc, so put the Lunaris scripts on PATH here.
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 [ -f "$HOME/.xinitrc" ] && exec /bin/sh "$HOME/.xinitrc"
 exec dwm

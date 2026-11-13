@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=dwm
-Comment=dwm-btw: dynamic window manager (runs ~/.xinitrc)
+Comment=Lunaris: dynamic window manager (runs ~/.xinitrc)
 Exec=/usr/local/bin/dwm-session
 TryExec=/usr/local/bin/dwm-session
 Type=XSession

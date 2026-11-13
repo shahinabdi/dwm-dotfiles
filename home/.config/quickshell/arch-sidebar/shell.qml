@@ -319,6 +319,14 @@ ShellRoot {
             root.sidebarVisible = true
         }
 
+        // open the Settings page (Updates is at the top) — lunaris-update, notifications
+        function settings(): void {
+            root.notifOpen = false
+            root.wsOpen = false
+            root.settingsOpen = true
+            root.sidebarVisible = true
+        }
+
         // open straight on the Workspaces page (icons + app rules)
         function workspaces(): void {
             root.notifOpen = false

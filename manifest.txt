@@ -27,3 +27,5 @@
 .config/quickshell/arch-sidebar
 .config/systemd/user/picom.service
 .config/systemd/user/clipmenud.service.d/override.conf
+.config/systemd/user/lunaris-update.service
+.config/systemd/user/lunaris-update.timer

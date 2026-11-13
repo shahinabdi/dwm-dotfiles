@@ -131,6 +131,13 @@ Rectangle {
             width: parent.width
             spacing: 18
 
+            // ---- updates: version, check now, update, weekly check (lunaris-update)
+            SectionTitle { text: "UPDATES" }
+
+            UpdatesCard {
+                width: parent.width
+            }
+
             // ---- bar items
             SectionTitle { text: "BAR ITEMS" }
 

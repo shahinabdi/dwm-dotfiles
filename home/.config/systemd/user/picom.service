@@ -1,5 +1,5 @@
 [Unit]
-Description=picom compositor (dwm-btw)
+Description=picom compositor (Lunaris)
 # started from ~/.xinitrc after DISPLAY is imported; give up after 5 crashes in a minute
 StartLimitIntervalSec=60
 StartLimitBurst=5

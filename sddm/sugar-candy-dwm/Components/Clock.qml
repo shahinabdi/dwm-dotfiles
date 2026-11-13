@@ -22,7 +22,7 @@
 // along with SDDM Sugar Candy. If not, see <https://www.gnu.org/licenses/>
 //
 
-// Modified for dwm-btw (2026): profile picture, time-of-day greeting with the user's name,
+// Modified for Lunaris (2026): profile picture, time-of-day greeting with the user's name,
 // subtitle with the host name, keyboard layout and Caps Lock chips. Options in theme.conf.
 
 import QtQuick

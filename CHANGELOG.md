@@ -1,24 +1,41 @@
 # Changelog
 
-All notable changes to **dwm-btw**, the desktop made of two repositories released together:
-[`dwm`](https://github.com/shahinabdi/dwm) (the window manager and its helper scripts) and
-[`dwm-dotfiles`](https://github.com/shahinabdi/dwm-dotfiles) (configs, sidebar, installer).
+All notable changes to **Lunaris**, the desktop made of two repositories released together:
+[`lunaris`](https://github.com/shahinabdi/lunaris) (configs, sidebar, installer — formerly `dwm-dotfiles`) and
+[`lunaris-dwm`](https://github.com/shahinabdi/lunaris-dwm) (the window manager and its helper scripts — formerly `dwm`).
+Website: <https://lunaris.shahinabdi.com>.
 Both repos carry the same version tags.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/) (0.x: still moving fast, things may change between versions).
 
-Update an existing install: `git pull` in both repos, then `./install.sh` (or Settings → DWM → Rebuild).
+Update an existing install: sidebar → ⚙ Settings → **Updates**, or `lunaris-update apply` (from 0.7.0; before that: `git pull` in both repos, then `./install.sh`).
 
 ---
 
-## [Unreleased]
+## [0.7.0] — 2026-11-13 · Updates, Lunaris name
+
+### Added
+- **Updates**: Lunaris checks for a new version every Tuesday (and at the next login if the computer was off)
+  and shows a notification with an **Update now** button.
+  - Sidebar → ⚙ Settings → **Updates** (at the top): installed version, **Check now**, **Update to vX**, what's new,
+    and the *Check every Tuesday* switch. A dot on the ⚙ gear tells you an update is waiting.
+  - The update runs in a terminal: it pulls both repos, redeploys only the configs that changed (yours are backed
+    up first), adds new commands, rebuilds dwm only when its source changed (asks for your password) and restarts
+    it in place. A repo with local changes is never overwritten.
+  - `lunaris-update check | apply | notes | timer on|off` in a terminal.
+- Website: <https://lunaris.shahinabdi.com>.
+
+### Changed
+- **The project is now called Lunaris.** Repositories: `dwm-dotfiles` → **`lunaris`**, `dwm` → **`lunaris-dwm`**
+  (old GitHub links redirect). New installs clone dwm to `~/lunaris-dwm`; existing installs keep their folder.
+  Settings paths (`~/.config/dwm-btw/…`, `~/.config/dwm-btw.conf`) are unchanged.
 
 ### Fixed
 - **Second monitor stayed off after the screens blanked.** A monitor in deep sleep reports itself as unplugged;
   autorandr then switched to "laptop only" and the monitor never got a signal to wake up. `dwm-autorandr` now waits
   while the screens are off and decides once they wake up (a monitor that was really unplugged is still handled).
-  Install: `./install.sh` again, or see the README.
+  Install: `./install.sh` again (or just update: it lists the system file and offers to run the installer).
 
 ---
 
@@ -117,7 +134,7 @@ Update an existing install: `git pull` in both repos, then `./install.sh` (or Se
 ## [0.2.0] — 2026-11-11 · Sidebar, layouts, gaps, wallpapers, installer
 
 ### Added
-- **dwm-dotfiles**: one-script installer (`install.sh`, `--dry-run`, `--no-apps`…), configs, `sync.sh`.
+- **dwm-dotfiles** (now `lunaris`): one-script installer (`install.sh`, `--dry-run`, `--no-apps`…), configs, `sync.sh`.
 - **Quickshell sidebar** (`Super + A`): profile, Wi-Fi, Bluetooth, audio, display, wallpaper, windows,
   screenshot, power.
 - **Restart dwm in place** (`Super + Ctrl + Shift + Q`): windows keep their workspaces.
@@ -141,9 +158,10 @@ Update an existing install: `git pull` in both repos, then `./install.sh` (or Se
   controls (`dwm-ctl`), status bar (`dwm-status`).
 - French AZERTY ⇄ Persian keyboard layouts.
 
-[0.6.0]: https://github.com/shahinabdi/dwm-dotfiles/compare/v0.5.0...v0.6.0
-[0.5.0]: https://github.com/shahinabdi/dwm-dotfiles/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/shahinabdi/dwm-dotfiles/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/shahinabdi/dwm-dotfiles/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/shahinabdi/dwm-dotfiles/releases/tag/v0.2.0
-[0.1.0]: https://github.com/shahinabdi/dwm/releases/tag/v0.1.0
+[0.7.0]: https://github.com/shahinabdi/lunaris/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/shahinabdi/lunaris/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/shahinabdi/lunaris/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/shahinabdi/lunaris/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/shahinabdi/lunaris/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/shahinabdi/lunaris/releases/tag/v0.2.0
+[0.1.0]: https://github.com/shahinabdi/lunaris-dwm/releases/tag/v0.1.0
