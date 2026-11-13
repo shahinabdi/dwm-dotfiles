@@ -3,6 +3,6 @@ Xcursor.size: 24
 Xft.dpi: 96
 dwm.barscale: 1.15
 dwm.gaps: 1
-dwm.gapinner: 10
-dwm.gapouter: 10
+dwm.gapinner: 12
+dwm.gapouter: 12
 dwm.smartgaps: 1
