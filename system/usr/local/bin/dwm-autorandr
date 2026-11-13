@@ -1,0 +1,31 @@
+#!/bin/sh
+# dwm-autorandr — run autorandr on monitor hotplug, but not while the screens are blanked.
+# Started by autorandr.service (udev "change" event on drm), see autorandr.service.d/override.conf.
+#
+# Why: when the screens turn off after inactivity (DPMS), many monitors go to deep sleep and report
+# themselves as unplugged. autorandr then switches to "laptop only", the computer stops sending a
+# picture to that monitor, and it never wakes up again. So while the screens are off we wait; once
+# they are back on, the monitor gets a few seconds to wake up and reconnect, then autorandr decides
+# (a monitor that was really unplugged is handled then).
+#
+# "Screens off" = every output that is in use (enabled) has DPMS Off. Read from /sys, no X needed.
+
+AUTORANDR="/usr/bin/autorandr --batch --change --default horizontal"
+
+screens_off() {
+	in_use=0
+	for c in /sys/class/drm/card*-*; do
+		[ "$(cat "$c/enabled" 2>/dev/null)" = enabled ] || continue
+		case $c in *Writeback*) continue ;; esac
+		in_use=1
+		[ "$(cat "$c/dpms" 2>/dev/null)" = On ] && return 1
+	done
+	[ "$in_use" = 1 ]
+}
+
+if screens_off; then
+	echo "screens are off (DPMS): waiting until they wake up before changing the monitor layout"
+	while screens_off; do sleep 2; done
+	sleep 5   # let a sleeping monitor wake up and reconnect
+fi
+exec $AUTORANDR

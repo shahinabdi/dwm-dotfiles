@@ -12,6 +12,16 @@ Update an existing install: `git pull` in both repos, then `./install.sh` (or Se
 
 ---
 
+## [Unreleased]
+
+### Fixed
+- **Second monitor stayed off after the screens blanked.** A monitor in deep sleep reports itself as unplugged;
+  autorandr then switched to "laptop only" and the monitor never got a signal to wake up. `dwm-autorandr` now waits
+  while the screens are off and decides once they wake up (a monitor that was really unplugged is still handled).
+  Install: `./install.sh` again, or see the README.
+
+---
+
 ## [0.6.0] — 2026-11-13 · Workspace editor
 
 ### Added
