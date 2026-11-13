@@ -94,7 +94,10 @@ Add a new config by listing its path in `manifest.txt` and running `./sync.sh`.
 |---|---|---|---|---|---|---|---|---|
 | app | kitty | Brave | VS Code | Thunar | Proton Mail | Obsidian | — | OBS |
 
-Rules and icons are in `rules.h` / `tags.h` in the dwm repo.
+Change workspace icons and which apps open where from the sidebar: **Mod+a → ⚙ → Workspaces**
+(add / edit / remove apps, pick icons, no rebuild — saved in `~/.config/dwm-btw/workspaces.conf`).
+A workspace can hold several apps (e.g. kitty, vim and htop on 1). Icons: <https://www.nerdfonts.com/cheat-sheet>.
+The defaults are `rules.h` / `tags.h` in the dwm repo.
 
 ## Keys (Mod = Super)
 

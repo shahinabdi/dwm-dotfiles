@@ -11,6 +11,7 @@ Rectangle {
     property var settings
     signal back()
     signal requestClose()
+    signal openWorkspaces()
 
     color: "#1a1b26"
 
@@ -43,7 +44,15 @@ Rectangle {
     Timer { id: refreshSoon; interval: 300; onTriggered: page.refresh() }
     function bar(args) { Quickshell.execDetached(["dwm-bar"].concat(args)); refreshSoon.restart() }
 
-    onVisibleChanged: if (visible) refresh()
+    // workspace icons for the WORKSPACES card
+    property var wsIcons: []
+    Process {
+        id: wsP
+        command: ["dwm-workspaces", "get"]
+        stdout: StdioCollector { onStreamFinished: { try { page.wsIcons = JSON.parse(this.text).icons } catch (e) {} } }
+    }
+
+    onVisibleChanged: if (visible) { refresh(); wsP.running = true }
 
     // ---------------------------------------------------------------- header
     Item {
@@ -206,6 +215,53 @@ Rectangle {
             }
 
             // ---- sidebar placement
+            // ---- workspaces: icons + app rules (WorkspacesPage)
+            SectionTitle { text: "WORKSPACES" }
+
+            Rectangle {
+                width: parent.width
+                height: wsCardCol.implicitHeight + 28
+                radius: 15
+                color: "#24283b"
+                Column {
+                    id: wsCardCol
+                    x: 14; y: 14
+                    width: parent.width - 28
+                    spacing: 10
+                    Row {
+                        id: wsIcons
+                        width: parent.width
+                        Repeater {
+                            model: page.wsIcons
+                            delegate: Text {
+                                width: wsIcons.width / 10
+                                horizontalAlignment: Text.AlignHCenter
+                                text: modelData
+                                font.family: "JetBrainsMono Nerd Font Mono"
+                                font.pixelSize: 17
+                                color: "#c0caf5"
+                            }
+                        }
+                    }
+                    Text {
+                        width: parent.width
+                        text: "Choose each workspace's icon and which apps open on it."
+                        color: "#a9b1d6"; font.pixelSize: 11; wrapMode: Text.WordWrap
+                    }
+                    Rectangle {
+                        width: parent.width
+                        height: 34; radius: 9
+                        color: wsm.containsMouse ? "#565f89" : "#414868"
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Edit icons & app rules  " + String.fromCodePoint(0xF0142)
+                            color: "#c0caf5"; font.pixelSize: 11; font.bold: true
+                        }
+                        MouseArea { id: wsm; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: page.openWorkspaces() }
+                    }
+                }
+            }
+
             SectionTitle { text: "SIDEBAR" }
 
             SidebarCard {

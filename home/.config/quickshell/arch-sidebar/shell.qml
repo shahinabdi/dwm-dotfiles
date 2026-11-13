@@ -11,9 +11,10 @@ ShellRoot {
     // Sidebar starts hidden and opens with SUPER + A.
     property bool sidebarVisible: false
     property bool settingsOpen: false          // gear next to the profile
+    property bool wsOpen: false                // Settings → Workspaces (icons + app rules)
     property bool notifOpen: false             // "See all" in Notifications / the cat on the bar
     // closing the sidebar: notifications seen (unread dots / bar count reset)
-    onSidebarVisibleChanged: if (!sidebarVisible) { settingsOpen = false; notifOpen = false; Quickshell.execDetached(["dwm-notif", "seen"]) }
+    onSidebarVisibleChanged: if (!sidebarVisible) { settingsOpen = false; notifOpen = false; wsOpen = false; Quickshell.execDetached(["dwm-notif", "seen"]) }
 
     // saved notifications (dwm-notif), shared by the card and the page
     NotifStore { id: notifs }
@@ -275,6 +276,21 @@ ShellRoot {
                 settings: settings
                 onBack: root.settingsOpen = false
                 onRequestClose: root.sidebarVisible = false
+                onOpenWorkspaces: root.wsOpen = true
+                Behavior on x { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: 200 } }
+            }
+
+            // Workspaces page (from Settings): slides in above it
+            WorkspacesPage {
+                width: parent.width - 2
+                height: parent.height - 2
+                y: 1
+                x: root.wsOpen ? 1 : (settings.side === "left" ? -width : width)
+                opacity: root.wsOpen ? 1 : 0
+                visible: opacity > 0
+                z: 11
+                onBack: root.wsOpen = false
                 Behavior on x { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
                 Behavior on opacity { NumberAnimation { duration: 200 } }
             }
@@ -300,6 +316,14 @@ ShellRoot {
         function notifications(): void {
             root.settingsOpen = false
             root.notifOpen = true
+            root.sidebarVisible = true
+        }
+
+        // open straight on the Workspaces page (icons + app rules)
+        function workspaces(): void {
+            root.notifOpen = false
+            root.settingsOpen = true
+            root.wsOpen = true
             root.sidebarVisible = true
         }
 

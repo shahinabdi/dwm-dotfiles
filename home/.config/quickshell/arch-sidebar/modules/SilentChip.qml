@@ -3,7 +3,7 @@ import QtQuick
 // "Silent" switch for notifications (no pop-ups, still saved).
 Rectangle {
     id: chip
-    property var store
+    property var store: ({ items: [], unread: 0, silent: false, apps: [] })   // set by shell.qml
     width: silRow.implicitWidth + 18
     height: 28
     radius: 14

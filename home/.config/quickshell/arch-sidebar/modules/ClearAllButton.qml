@@ -3,7 +3,7 @@ import QtQuick
 // "Clear all" for notifications: the first click asks, the second deletes (or `ids` only, when set).
 Rectangle {
     id: btn
-    property var store
+    property var store: ({ items: [], unread: 0, silent: false, apps: [] })   // set by shell.qml
     property var ids: null          // null = everything; otherwise only these (filtered view)
     property string label: "Clear all"
     property bool confirm: false

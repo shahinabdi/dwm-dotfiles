@@ -6,7 +6,7 @@ Item {
     width: 300
     height: card.implicitHeight
 
-    property var store
+    property var store: ({ items: [], unread: 0, silent: false, apps: [] })   // set by shell.qml
     signal openPage()
 
     readonly property var latest: store.items.slice(0, 3)

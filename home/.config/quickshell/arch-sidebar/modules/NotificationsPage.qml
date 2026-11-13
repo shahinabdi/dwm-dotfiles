@@ -6,7 +6,7 @@ import QtQuick.Controls
 Rectangle {
     id: page
 
-    property var store
+    property var store: ({ items: [], unread: 0, silent: false, apps: [] })   // set by shell.qml
     signal back()
 
     color: "#1a1b26"
