@@ -13,6 +13,22 @@ Update an existing install: sidebar → ⚙ Settings → **Updates**, or `lunari
 
 ---
 
+## [0.9.0] — 2026-11-14 · System monitor
+
+### Added
+- **System card** in the sidebar (`Super + A`, under Audio): CPU usage and temperature, memory (and swap),
+  disk usage of `/`, load, and the three busiest apps right now — refreshed every 3 s while the sidebar is open,
+  bars turn yellow above 75 % and red above 90 %.
+- **htop in one click**: the *htop* button (or a click on the card) opens htop in your default terminal.
+  `dwm-sysinfo` / `dwm-sysinfo htop` in a terminal.
+- `htop` added to the core packages.
+
+### Notes
+- If Super+Shift+Q still logs out without asking, your installed dwm predates 0.8.0: sidebar → ⚙ Settings → DWM →
+  **Rebuild** once.
+
+---
+
 ## [0.8.0] — 2026-11-13 · Default terminal, safe log out
 
 ### Added
@@ -181,6 +197,7 @@ Update an existing install: sidebar → ⚙ Settings → **Updates**, or `lunari
   controls (`dwm-ctl`), status bar (`dwm-status`).
 - French AZERTY ⇄ Persian keyboard layouts.
 
+[0.9.0]: https://github.com/shahinabdi/lunaris/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/shahinabdi/lunaris/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/shahinabdi/lunaris/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/shahinabdi/lunaris/compare/v0.5.0...v0.6.0

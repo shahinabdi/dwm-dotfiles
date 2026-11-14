@@ -61,7 +61,10 @@ What it does:
    (needs PipeWire running — if you install from a TTY, run `./install.sh --configs` again after `startx`)
 
 
-**What's new:** see [CHANGELOG.md](CHANGELOG.md) (current version: **0.8.0**).
+**What's new:** see [CHANGELOG.md](CHANGELOG.md) (current version: **0.9.0**).
+
+## System monitor
+Sidebar → **System**: CPU (with temperature), memory, disk and the busiest apps; **htop** opens in one click.
 
 ## Default terminal
 kitty by default. Sidebar → ⚙ **Settings → Terminal** lists the terminals you have installed; the one you pick is

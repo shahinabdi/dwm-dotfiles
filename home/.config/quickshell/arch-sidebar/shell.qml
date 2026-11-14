@@ -211,6 +211,17 @@ ShellRoot {
                     }
 
                     // =================================
+                    // SYSTEM (CPU, memory, disk — htop in one click)
+                    // =================================
+
+                    SectionTitle { text: "SYSTEM" }
+
+                    SystemCard {
+                        width: parent.width
+                        active: root.sidebarVisible
+                    }
+
+                    // =================================
                     // DISPLAY
                     // =================================
 
